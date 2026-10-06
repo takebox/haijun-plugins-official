@@ -1,6 +1,6 @@
-# Claude Code Setup Plugin
+# Haijun Code Setup Plugin
 
-Analyze codebases and recommend tailored Claude Code automations - hooks, skills, MCP servers, and more.
+Analyze codebases and recommend tailored Haijun Code automations - hooks, skills, MCP servers, and more.
 
 ## What It Does
 
@@ -18,7 +18,7 @@ This skill is **read-only** - it analyzes but doesn't modify files.
 
 ```
 "recommend automations for this project"
-"help me set up Claude Code"
+"help me set up Haijun Code"
 "what hooks should I use?"
 ```
 

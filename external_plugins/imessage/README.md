@@ -1,6 +1,6 @@
 # iMessage
 
-Connect iMessage to your Claude Code assistant. Reads `~/Library/Messages/chat.db` directly for history, search, and new-message detection; sends via AppleScript to Messages.app. No external server, no background process to keep alive.
+Connect iMessage to your Haijun Code assistant. Reads `~/Library/Messages/chat.db` directly for history, search, and new-message detection; sends via AppleScript to Messages.app. No external server, no background process to keep alive.
 
 macOS only.
 
@@ -15,7 +15,7 @@ If you click Don't Allow, or the prompt never appears, grant it manually: **Syst
 
 **2. Install the plugin.**
 
-These are Claude Code commands — run `claude` to start a session first.
+These are Haijun Code commands — run `claude` to start a session first.
 
 Install the plugin. No env vars required.
 ```

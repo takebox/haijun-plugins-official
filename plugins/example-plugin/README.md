@@ -1,6 +1,6 @@
 # Example Plugin
 
-A comprehensive example plugin demonstrating Claude Code extension options.
+A comprehensive example plugin demonstrating Haijun Code extension options.
 
 ## Structure
 

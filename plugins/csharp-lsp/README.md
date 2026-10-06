@@ -1,6 +1,6 @@
 # csharp-lsp
 
-C# language server for Claude Code, providing code intelligence and diagnostics.
+C# language server for Haijun Code, providing code intelligence and diagnostics.
 
 ## Supported Extensions
 `.cs`

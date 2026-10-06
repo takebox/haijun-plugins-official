@@ -1,6 +1,6 @@
 # gopls-lsp
 
-Go language server for Claude Code, providing code intelligence, refactoring, and analysis.
+Go language server for Haijun Code, providing code intelligence, refactoring, and analysis.
 
 ## Supported Extensions
 `.go`

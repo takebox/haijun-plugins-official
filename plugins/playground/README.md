@@ -25,4 +25,4 @@ The skill includes templates for common playground types:
 
 ## Installation
 
-Add this plugin to your Claude Code configuration to enable the playground skill.
+Add this plugin to your Haijun Code configuration to enable the playground skill.

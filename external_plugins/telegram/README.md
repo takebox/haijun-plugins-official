@@ -1,8 +1,8 @@
 # Telegram
 
-Connect a Telegram bot to your Claude Code with an MCP server.
+Connect a Telegram bot to your Haijun Code with an MCP server.
 
-The MCP server logs into Telegram as a bot and provides tools to Claude to reply, react, or edit messages. When you message the bot, the server forwards the message to your Claude Code session.
+The MCP server logs into Telegram as a bot and provides tools to Claude to reply, react, or edit messages. When you message the bot, the server forwards the message to your Haijun Code session.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ BotFather replies with a token that looks like `123456789:AAHfiqksKZ8...` — th
 
 **2. Install the plugin.**
 
-These are Claude Code commands — run `claude` to start a session first.
+These are Haijun Code commands — run `claude` to start a session first.
 
 Install the plugin:
 ```
@@ -49,7 +49,7 @@ claude --channels plugin:telegram@claude-plugins-official
 
 **5. Pair.**
 
-With Claude Code running from the previous step, DM your bot on Telegram — it replies with a 6-character pairing code. If the bot doesn't respond, make sure your session is running with `--channels`. In your Claude Code session:
+With Haijun Code running from the previous step, DM your bot on Telegram — it replies with a 6-character pairing code. If the bot doesn't respond, make sure your session is running with `--channels`. In your Haijun Code session:
 
 ```
 /telegram:access pair <code>

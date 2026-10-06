@@ -149,9 +149,9 @@ npm start
 
 ## Installation
 
-This plugin is included in the Claude Code repository. To use it:
+This plugin is included in the Haijun Code repository. To use it:
 
-1. Ensure Claude Code is installed
+1. Ensure Haijun Code is installed
 2. The plugin commands and agents are automatically available
 
 ## Best Practices

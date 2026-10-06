@@ -1,13 +1,13 @@
 # fakechat
 
 Simple UI for testing the channel contract without an
-external service. Open a browser, type, messages go to your Claude Code
+external service. Open a browser, type, messages go to your Haijun Code
 session, replies come back.
 
 
 ## Setup
 
-These are Claude Code commands — run `claude` to start a session first.
+These are Haijun Code commands — run `claude` to start a session first.
 
 Install the plugin:
 ```

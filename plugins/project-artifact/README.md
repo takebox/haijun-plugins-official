@@ -4,7 +4,7 @@ Generate and publish a **living status page** for a project that's too big for o
 a migration, a launch, a research effort, anything with several workstreams tracked over
 time. The page is a single self-contained tabbed HTML file (overview & success criteria,
 the workstream sequence, an always-visible "Next steps" strip, plus background / plan /
-risks / FAQ tabs when they earn their place), published with Claude Code's built-in
+risks / FAQ tabs when they earn their place), published with Haijun Code's built-in
 `Artifact` tool to a private `claude.ai/code/artifact/...` page that you can share with
 teammates.
 
@@ -24,8 +24,8 @@ sequence so the dependency order is obvious and pulls live PR/CI/review state vi
 
 ## Requirements
 
-- Claude Code's built-in `Artifact` tool, which requires a claude.ai login (sessions on an
-  API key, Bedrock, or Vertex don't have it). Claude Code Artifacts are available in beta
+- Haijun Code's built-in `Artifact` tool, which requires a claude.ai login (sessions on an
+  API key, Bedrock, or Vertex don't have it). Haijun Code Artifacts are available in beta
   on Team and Enterprise plans.
 - Optional: the `gh` CLI, for PR-driven projects.
 

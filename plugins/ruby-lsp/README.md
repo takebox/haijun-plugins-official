@@ -1,6 +1,6 @@
 # ruby-lsp
 
-Ruby language server for Claude Code, providing code intelligence and analysis.
+Ruby language server for Haijun Code, providing code intelligence and analysis.
 
 ## Supported Extensions
 `.rb`, `.rake`, `.gemspec`, `.ru`, `.erb`

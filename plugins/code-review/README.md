@@ -86,7 +86,7 @@ https://github.com/owner/repo/blob/abc123.../src/utils.ts#L23-L28
 
 ## Installation
 
-This plugin is included in the Claude Code repository. The command is automatically available when using Claude Code.
+This plugin is included in the Haijun Code repository. The command is automatically available when using Haijun Code.
 
 ## Best Practices
 

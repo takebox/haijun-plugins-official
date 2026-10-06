@@ -1,4 +1,4 @@
-Kotlin language server for Claude Code, providing code intelligence, refactoring, and analysis.
+Kotlin language server for Haijun Code, providing code intelligence, refactoring, and analysis.
 
 ## Supported Extensions
 `.kt`

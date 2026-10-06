@@ -1,12 +1,12 @@
 # Asana
 
-[Asana](https://asana.com) is a work management platform for tasks, projects, and goals. This plugin connects Claude Code to Asana's **V2 MCP server** so you can create and manage tasks, search projects, update assignments, and track progress directly from your terminal.
+[Asana](https://asana.com) is a work management platform for tasks, projects, and goals. This plugin connects Haijun Code to Asana's **V2 MCP server** so you can create and manage tasks, search projects, update assignments, and track progress directly from your terminal.
 
 > **Migrating from V1?** The V1 beta server (`https://mcp.asana.com/sse`) is deprecated and shuts down on **Wed 5 Aug 2026**. The V2 server requires each user to bring their own Asana OAuth app — Dynamic Client Registration is **not** supported on V2, so there is no zero-config connect. Follow the setup below (or run `/asana-setup`).
 
 ## Setup
 
-You only need to do this once. The fastest path is to run **`/asana-setup`** inside Claude Code and follow the printed steps, or do it manually:
+You only need to do this once. The fastest path is to run **`/asana-setup`** inside Haijun Code and follow the printed steps, or do it manually:
 
 ### 1. Create an Asana OAuth app
 
@@ -18,10 +18,10 @@ You only need to do this once. The fastest path is to run **`/asana-setup`** ins
    http://localhost:8080/callback
    ```
 
-   (This is Claude Code's local OAuth callback. It is `localhost` by design — Claude Code runs on your machine and catches the authorization code on a local listener. It must match the `--callback-port` you use below.)
+   (This is Haijun Code's local OAuth callback. It is `localhost` by design — Haijun Code runs on your machine and catches the authorization code on a local listener. It must match the `--callback-port` you use below.)
 4. Copy your **Client ID** and **Client Secret**.
 
-### 2. Add the Asana V2 server to Claude Code
+### 2. Add the Asana V2 server to Haijun Code
 
 Run this in your terminal (not inside a Claude prompt — the secret is entered at a hidden prompt):
 
@@ -33,12 +33,12 @@ claude mcp add --transport http \
 ```
 
 - Replace `YOUR_CLIENT_ID` with the Client ID from step 1.
-- `--client-secret` with no value makes Claude Code prompt for the secret and store it securely in your OS keychain (never on disk).
+- `--client-secret` with no value makes Haijun Code prompt for the secret and store it securely in your OS keychain (never on disk).
 - `--callback-port 8080` must match the port in the redirect URL you registered.
 
 ### 3. Authenticate and verify
 
-1. The next time the `asana` server is used, Claude Code opens your browser for Asana consent. Approve it.
+1. The next time the `asana` server is used, Haijun Code opens your browser for Asana consent. Approve it.
 2. Confirm the connection:
 
    ```
@@ -46,11 +46,11 @@ claude mcp add --transport http \
    ```
 
    You should see `asana` listed as **connected**.
-3. Try it: ask Claude Code to "list my Asana workspaces" or "show my assigned tasks."
+3. Try it: ask Haijun Code to "list my Asana workspaces" or "show my assigned tasks."
 
 ## Example usage
 
-Ask Claude Code to:
+Ask Haijun Code to:
 
 - "Create an Asana task in the Backend project titled 'Fix login bug' assigned to me."
 - "What are my Asana tasks due this week?"
@@ -65,4 +65,4 @@ Ask Claude Code to:
 ## Documentation
 
 - [Integrating with Asana's MCP server](https://developers.asana.com/docs/integrating-with-asanas-mcp-server)
-- [Connecting MCP clients to Asana's V2 server (Claude Code)](https://developers.asana.com/docs/connecting-mcp-clients-to-asanas-v2-server)
+- [Connecting MCP clients to Asana's V2 server (Haijun Code)](https://developers.asana.com/docs/connecting-mcp-clients-to-asanas-v2-server)

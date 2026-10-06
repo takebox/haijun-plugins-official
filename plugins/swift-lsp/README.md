@@ -1,6 +1,6 @@
 # swift-lsp
 
-Swift language server (SourceKit-LSP) for Claude Code, providing code intelligence for Swift projects.
+Swift language server (SourceKit-LSP) for Haijun Code, providing code intelligence for Swift projects.
 
 ## Supported Extensions
 `.swift`

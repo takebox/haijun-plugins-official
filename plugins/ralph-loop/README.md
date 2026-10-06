@@ -1,6 +1,6 @@
 # Ralph Loop Plugin
 
-Implementation of the Ralph Wiggum technique for iterative, self-referential AI development loops in Claude Code.
+Implementation of the Ralph Wiggum technique for iterative, self-referential AI development loops in Haijun Code.
 
 ## What is Ralph Loop?
 
@@ -16,7 +16,7 @@ This plugin implements Ralph using a **Stop hook** that intercepts Claude's exit
 # You run ONCE:
 /ralph-loop "Your task description" --completion-promise "DONE"
 
-# Then Claude Code automatically:
+# Then Haijun Code automatically:
 # 1. Works on the task
 # 2. Tries to exit
 # 3. Stop hook blocks exit
@@ -194,4 +194,4 @@ The stop hook uses a bash script that requires Git for Windows to run properly.
 
 ## For Help
 
-Run `/help` in Claude Code for detailed command reference and examples.
+Run `/help` in Haijun Code for detailed command reference and examples.

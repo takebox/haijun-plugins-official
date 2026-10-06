@@ -1,6 +1,6 @@
 # Discord
 
-Connect a Discord bot to your Claude Code with an MCP server.
+Connect a Discord bot to your Haijun Code with an MCP server.
 
 When the bot receives a message, the MCP server forwards it to Claude and provides tools to reply, react, and edit messages.
 
@@ -42,7 +42,7 @@ Integration type: **Guild Install**. Copy the **Generated URL**, open it, and ad
 
 **4. Install the plugin.**
 
-These are Claude Code commands — run `claude` to start a session first.
+These are Haijun Code commands — run `claude` to start a session first.
 
 Install the plugin:
 ```
@@ -69,7 +69,7 @@ claude --channels plugin:discord@claude-plugins-official
 
 **7. Pair.**
 
-With Claude Code running from the previous step, DM your bot on Discord — it replies with a pairing code. If the bot doesn't respond, make sure your session is running with `--channels`. In your Claude Code session:
+With Haijun Code running from the previous step, DM your bot on Discord — it replies with a pairing code. If the bot doesn't respond, make sure your session is running with `--channels`. In your Haijun Code session:
 
 ```
 /discord:access pair <code>

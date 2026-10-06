@@ -1,6 +1,6 @@
 # lua-lsp
 
-Lua language server for Claude Code, providing code intelligence and diagnostics.
+Lua language server for Haijun Code, providing code intelligence and diagnostics.
 
 ## Supported Extensions
 `.lua`

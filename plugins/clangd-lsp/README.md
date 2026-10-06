@@ -1,6 +1,6 @@
 # clangd-lsp
 
-C/C++ language server (clangd) for Claude Code, providing code intelligence, diagnostics, and formatting.
+C/C++ language server (clangd) for Haijun Code, providing code intelligence, diagnostics, and formatting.
 
 ## Supported Extensions
 `.c`, `.h`, `.cpp`, `.cc`, `.cxx`, `.hpp`, `.hxx`, `.C`, `.H`

@@ -2,7 +2,7 @@
 
 [Context7](https://context7.com) solves a common problem with AI coding assistants: outdated training data and hallucinated APIs. Instead of relying on stale knowledge, Context7 fetches current documentation and code examples directly from source repositories.
 
-This plugin connects Claude Code to Context7's hosted remote MCP server (`https://mcp.context7.com/mcp`) — no local Node.js, npm, or npx required.
+This plugin connects Haijun Code to Context7's hosted remote MCP server (`https://mcp.context7.com/mcp`) — no local Node.js, npm, or npx required.
 
 ## Available Tools
 
@@ -11,14 +11,14 @@ This plugin connects Claude Code to Context7's hosted remote MCP server (`https:
 
 ## API Key (optional)
 
-Without an API key the plugin connects anonymously and shares the anonymous rate limits. To use your own plan, create an API key in the [Context7 dashboard](https://context7.com/dashboard) and export it as an environment variable before launching Claude Code:
+Without an API key the plugin connects anonymously and shares the anonymous rate limits. To use your own plan, create an API key in the [Context7 dashboard](https://context7.com/dashboard) and export it as an environment variable before launching Haijun Code:
 
 ```bash
 # e.g. in ~/.zshrc or ~/.bashrc
 export CONTEXT7_API_KEY="your-api-key"
 ```
 
-The plugin's MCP server configuration picks up `CONTEXT7_API_KEY` automatically. Restart Claude Code after setting it, then verify usage in the [dashboard](https://context7.com/dashboard).
+The plugin's MCP server configuration picks up `CONTEXT7_API_KEY` automatically. Restart Haijun Code after setting it, then verify usage in the [dashboard](https://context7.com/dashboard).
 
 ## Usage
 

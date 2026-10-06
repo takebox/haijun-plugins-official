@@ -1,6 +1,6 @@
 # php-lsp
 
-PHP language server (Intelephense) for Claude Code, providing code intelligence and diagnostics.
+PHP language server (Intelephense) for Haijun Code, providing code intelligence and diagnostics.
 
 ## Supported Extensions
 `.php`

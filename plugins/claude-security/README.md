@@ -1,16 +1,16 @@
-# Claude Security Plugin for Claude Code
+# Claude Security Plugin for Haijun Code
 
 Put a team of agents to work as security researchers on your codebase: map the architecture, build a threat model, hunt across every component, and independently verify every finding before it reaches the report. Then, if you want, turn the confirmed findings into suggested fixes delivered as targeted patch files you review and apply when you choose.
 
-This is the in-your-session version of [Claude Security](https://claude.com/product/claude-security), Anthropic’s hosted product for vulnerability detection and patching. It runs entirely inside your Claude Code session — no separate process, no daemon.
+This is the in-your-session version of [Claude Security](https://claude.com/product/claude-security), Anthropic’s hosted product for vulnerability detection and patching. It runs entirely inside your Haijun Code session — no separate process, no daemon.
 
 ## Claude Fable 5.1 Support
 
-The Claude Security Plugin for Claude Code supports Claude Fable 5.1, and it is the best model to use for discovering vulnerabilities. Portions of a scan may occasionally be downgraded to Opus 4.8; the rest of the scan completes on Fable 5.1. Please share feedback with `/feedback` so we can keep improving our cybersecurity safeguards.
+The Claude Security Plugin for Haijun Code supports Claude Fable 5.1, and it is the best model to use for discovering vulnerabilities. Portions of a scan may occasionally be downgraded to Opus 4.8; the rest of the scan completes on Fable 5.1. Please share feedback with `/feedback` so we can keep improving our cybersecurity safeguards.
 
 ## Where it runs
 
-A scan and a fix both run in your Claude Code session, under your permissions. The plugin reads the repository you have open the same way you would, and adds no isolation of its own: the directory's `.git/config`, its `.claude/` settings and hooks, and its `CLAUDE.md` all apply exactly as they would in any other session.
+A scan and a fix both run in your Haijun Code session, under your permissions. The plugin reads the repository you have open the same way you would, and adds no isolation of its own: the directory's `.git/config`, its `.claude/` settings and hooks, and its `CLAUDE.md` all apply exactly as they would in any other session.
 
 That makes it a natural fit for code you control — your own repositories, where the question is which bugs are in the code rather than whether the code is trying something. If you are scanning a repository that you do not trust, such as a third-party dependency or an unfamiliar repository, we suggest running the whole session inside [sandbox-runtime](https://github.com/anthropic-experimental/sandbox-runtime).
 
@@ -21,7 +21,7 @@ Install from the official Anthropic marketplace, then reload plugins in the same
     /plugin install claude-security@claude-plugins-official
     /reload-plugins
 
-If Claude Code reports that the marketplace is not found, run `/plugin marketplace add anthropics/claude-plugins-official` first, then retry.
+If Haijun Code reports that the marketplace is not found, run `/plugin marketplace add anthropics/claude-plugins-official` first, then retry.
 
 
 ## Getting started
@@ -79,13 +79,13 @@ The patches land in the report's `patches/` folder: one `F<n>.patch` per finding
 
 ## Requirements
 
-- Claude Code with this plugin installed
+- Haijun Code with this plugin installed
 - Python 3.9 or newer on `PATH`
 - A git checkout for scanning changes and suggesting patches — a whole-repository scan works without one
 
 ## Telemetry
 
-The plugin reports usage counts (scans started and finished, findings by severity, patches drafted, and which step failed when one does) through Claude Code's built-in telemetry. To turn this off, use Claude Code's own settings: set `DISABLE_TELEMETRY=1` (or `DO_NOT_TRACK=1`, or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`) and these counts are not sent to Anthropic. See [Claude Code's data usage documentation](https://code.claude.com/docs/en/data-usage#telemetry-services).
+The plugin reports usage counts (scans started and finished, findings by severity, patches drafted, and which step failed when one does) through Haijun Code's built-in telemetry. To turn this off, use Haijun Code's own settings: set `DISABLE_TELEMETRY=1` (or `DO_NOT_TRACK=1`, or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`) and these counts are not sent to Anthropic. See [Haijun Code's data usage documentation](https://code.claude.com/docs/en/data-usage#telemetry-services).
 
 ## Security
 

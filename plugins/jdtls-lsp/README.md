@@ -1,6 +1,6 @@
 # jdtls-lsp
 
-Java language server (Eclipse JDT.LS) for Claude Code, providing code intelligence and refactoring.
+Java language server (Eclipse JDT.LS) for Haijun Code, providing code intelligence and refactoring.
 
 ## Supported Extensions
 `.java`

@@ -1,6 +1,6 @@
 # rust-analyzer-lsp
 
-Rust language server for Claude Code, providing code intelligence and analysis.
+Rust language server for Haijun Code, providing code intelligence and analysis.
 
 ## Supported Extensions
 `.rs`

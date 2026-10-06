@@ -1,6 +1,6 @@
-# Claude Code Plugins Directory
+# Haijun Code Plugins Directory
 
-A curated directory of high-quality plugins for Claude Code.
+A curated directory of high-quality plugins for Haijun Code.
 
 > **⚠️ Important:** Make sure you trust a plugin before installing, updating, or using it. Anthropic does not control what MCP servers, files, or other software are included in plugins and cannot verify that they will work as intended or that they won't change. See each plugin's homepage for more information.
 
@@ -11,7 +11,7 @@ A curated directory of high-quality plugins for Claude Code.
 
 ## Installation
 
-Plugins can be installed directly from this marketplace via Claude Code's plugin system.
+Plugins can be installed directly from this marketplace via Haijun Code's plugin system.
 
 To install, run `/plugin install {plugin-name}@claude-plugins-official`
 
@@ -55,7 +55,7 @@ The `name` field in a marketplace entry is an **immutable slug**. Once a plugin 
 }
 ```
 
-The Claude Code plugin loader reads this map and transparently rewrites the old slug to the new one on the user's next sync.
+The Haijun Code plugin loader reads this map and transparently rewrites the old slug to the new one on the user's next sync.
 
 ## Skill-bundle plugins
 
@@ -84,7 +84,7 @@ When a plugin's source repository ships skills (`SKILL.md` files) without a `.cl
 }
 ```
 
-Each path in `skills` is relative to `source.path` and points at a directory containing a `SKILL.md`. Paths can reach deeper than a single level — for example, `["./libA/skill-1", "./libB/skill-2"]` exposes a curated subset across multiple library subdirectories. Each skill is registered as `<plugin-name>:<skill-name>` in Claude Code.
+Each path in `skills` is relative to `source.path` and points at a directory containing a `SKILL.md`. Paths can reach deeper than a single level — for example, `["./libA/skill-1", "./libB/skill-2"]` exposes a curated subset across multiple library subdirectories. Each skill is registered as `<plugin-name>:<skill-name>` in Haijun Code.
 
 For the underlying schema, see [Strict mode](https://code.claude.com/docs/en/plugin-marketplaces) in the marketplace documentation.
 
@@ -94,4 +94,4 @@ Please see each linked plugin for the relevant LICENSE file.
 
 ## Documentation
 
-For more information on developing Claude Code plugins, see the [official documentation](https://code.claude.com/docs/en/plugins).
+For more information on developing Haijun Code plugins, see the [official documentation](https://code.claude.com/docs/en/plugins).
