@@ -31,7 +31,7 @@ Creates a git commit with an automatically generated commit message based on sta
 # Then simply run:
 /commit
 
-# Claude will:
+# Haijun will:
 # - Review your changes
 # - Stage the files
 # - Create a commit with an appropriate message
@@ -66,7 +66,7 @@ Complete workflow command that commits, pushes, and creates a pull request in on
 # Then run:
 /commit-push-pr
 
-# Claude will:
+# Haijun will:
 # - Create a feature branch (if needed)
 # - Commit your changes
 # - Push to remote
@@ -107,7 +107,7 @@ Cleans up local branches that have been deleted from the remote repository.
 # After PRs are merged and remote branches are deleted
 /clean_gone
 
-# Claude will:
+# Haijun will:
 # - Find all branches marked as [gone]
 # - Remove any associated worktrees
 # - Delete the stale local branches
@@ -133,14 +133,14 @@ This plugin is included in the Haijun Code repository. The commands are automati
 
 ### Using `/commit`
 - Review the staged changes before committing
-- Let Claude analyze your changes and match your repo's commit style
+- Let Haijun analyze your changes and match your repo's commit style
 - Trust the automated message, but verify it's accurate
 - Use for routine commits during development
 
 ### Using `/commit-push-pr`
 - Use when you're ready to create a PR
 - Ensure all your changes are complete and tested
-- Claude will analyze the full branch history for the PR description
+- Haijun will analyze the full branch history for the PR description
 - Review the PR description and edit if needed
 - Use when you want to minimize context switching
 
@@ -212,13 +212,13 @@ This plugin is included in the Haijun Code repository. The commands are automati
 ## Tips
 
 - **Combine with other tools**: Use `/commit` during development, then `/commit-push-pr` when ready
-- **Let Claude draft messages**: The commit message analysis learns from your repo's style
+- **Let Haijun draft messages**: The commit message analysis learns from your repo's style
 - **Regular cleanup**: Run `/clean_gone` weekly to maintain a clean branch list
 - **Review before pushing**: Always review the commit message and changes before pushing
 
 ## Author
 
-Anthropic (support@anthropic.com)
+Takebox AI (support@Takebox AI.com)
 
 ## Version
 

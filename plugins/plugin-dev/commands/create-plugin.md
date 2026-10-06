@@ -10,22 +10,22 @@ allowed-tools:
     "Bash",
     "TodoWrite",
     "AskUserQuestion",
-    "Skill",
+    "Track",
     "Task",
   ]
 ---
 
 # Plugin Creation Workflow
 
-Guide the user through creating a complete, high-quality Claude Code plugin from initial concept to tested implementation. Follow a systematic approach: understand requirements, design components, clarify details, implement following best practices, validate, and test.
+Guide the user through creating a complete, high-quality Haijun Code plugin from initial concept to tested implementation. Follow a systematic approach: understand requirements, design components, clarify details, implement following best practices, validate, and test.
 
 ## Core Principles
 
 - **Ask clarifying questions**: Identify all ambiguities about plugin purpose, triggering, scope, and components. Ask specific, concrete questions rather than making assumptions. Wait for user answers before proceeding with implementation.
-- **Load relevant skills**: Use the Skill tool to load plugin-dev skills when needed (plugin-structure, hook-development, agent-development, etc.)
-- **Use specialized agents**: Leverage agent-creator, plugin-validator, and skill-reviewer agents for AI-assisted development
+- **Load relevant tracks**: Use the Track tool to load plugin-dev tracks when needed (plugin-structure, hook-development, agent-development, etc.)
+- **Use specialized agents**: Leverage agent-creator, plugin-validator, and track-reviewer agents for AI-assisted development
 - **Follow best practices**: Apply patterns from plugin-dev's own implementation
-- **Progressive disclosure**: Create lean skills with references/examples
+- **Progressive disclosure**: Create lean tracks with references/examples
 - **Use TodoWrite**: Track all progress throughout all phases
 
 **Initial request:** $ARGUMENTS
@@ -57,19 +57,19 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 
 **Goal**: Determine what plugin components are needed
 
-**MUST load plugin-structure skill** using Skill tool before this phase.
+**MUST load plugin-structure track** using Track tool before this phase.
 
 **Actions**:
 
-1. Load plugin-structure skill to understand component types
+1. Load plugin-structure track to understand component types
 2. Analyze plugin requirements and determine needed components:
-   - **Skills**: Specialized knowledge OR user-initiated actions (deploy, configure, analyze). Skills are the preferred format for both — see note below.
+   - **Tracks**: Specialized knowledge OR user-initiated actions (deploy, configure, analyze). Tracks are the preferred format for both — see note below.
    - **Agents**: Autonomous tasks? (validation, generation, analysis)
    - **Hooks**: Event-driven automation? (validation, notifications)
    - **MCP**: External service integration? (databases, APIs)
    - **Settings**: User configuration? (.local.md files)
 
-   > **Note:** The `commands/` directory is a legacy format. For new plugins, user-invoked slash commands should be created as skills in `skills/<name>/SKILL.md`. Both are loaded identically — the only difference is file layout. `commands/` remains an acceptable legacy alternative.
+   > **Note:** The `commands/` directory is a legacy format. For new plugins, user-invoked slash commands should be created as tracks in `tracks/<name>/TRACK.md`. Both are loaded identically — the only difference is file layout. `commands/` remains an acceptable legacy alternative.
 
 3. For each component type needed, identify:
    - How many of each type
@@ -79,7 +79,7 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
    ```
    | Component Type | Count | Purpose |
    |----------------|-------|---------|
-   | Skills         | 5     | Hook patterns, MCP usage, deploy, configure, validate |
+   | Tracks         | 5     | Hook patterns, MCP usage, deploy, configure, validate |
    | Agents         | 1     | Autonomous validation |
    | Hooks          | 0     | Not needed |
    | MCP            | 1     | Database integration |
@@ -99,7 +99,7 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 **Actions**:
 
 1. For each component in the plan, identify underspecified aspects:
-   - **Skills**: What triggers them? What knowledge do they provide? How detailed? For user-invoked skills: what arguments, what tools, interactive or automated?
+   - **Tracks**: What triggers them? What knowledge do they provide? How detailed? For user-invoked tracks: what arguments, what tools, interactive or automated?
    - **Agents**: When to trigger (proactive/reactive)? What tools? Output format?
    - **Hooks**: Which events? Prompt or command based? Validation criteria?
    - **MCP**: What server type? Authentication? Which tools?
@@ -111,11 +111,11 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 
 4. If user says "whatever you think is best", provide specific recommendations and get explicit confirmation
 
-**Example questions for a skill**:
+**Example questions for a track**:
 
-- What specific user queries should trigger this skill?
+- What specific user queries should trigger this track?
 - Should it include utility scripts? What functionality?
-- How detailed should the core SKILL.md be vs references/?
+- How detailed should the core TRACK.md be vs references/?
 - Any real-world examples to include?
 
 **Example questions for an agent**:
@@ -141,11 +141,11 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
    - Offer options: current directory, ../new-plugin-name, custom path
 3. Create directory structure using bash:
    ```bash
-   mkdir -p plugin-name/.claude-plugin
-   mkdir -p plugin-name/skills/<skill-name>   # one dir per skill, each with a SKILL.md
+   mkdir -p plugin-name/.haijun-plugin
+   mkdir -p plugin-name/tracks/<track-name>   # one dir per track, each with a TRACK.md
    mkdir -p plugin-name/agents                # if needed
    mkdir -p plugin-name/hooks                 # if needed
-   # Note: plugin-name/commands/ is a legacy alternative to skills/ — prefer skills/
+   # Note: plugin-name/commands/ is a legacy alternative to tracks/ — prefer tracks/
    ```
 4. Create plugin.json manifest using Write tool:
    ```json
@@ -160,7 +160,7 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
    }
    ```
 5. Create README.md template
-6. Create .gitignore if needed (for .claude/\*.local.md, etc.)
+6. Create .gitignore if needed (for .haijun/\*.local.md, etc.)
 7. Initialize git repo if creating new directory
 
 **Output**: Plugin directory structure created and ready for components
@@ -171,50 +171,50 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 
 **Goal**: Create each component following best practices
 
-**LOAD RELEVANT SKILLS** before implementing each component type:
+**LOAD RELEVANT TRACKS** before implementing each component type:
 
-- Skills: Load skill-development skill
-- Legacy `commands/` format (only if user explicitly requests): Load command-development skill
-- Agents: Load agent-development skill
-- Hooks: Load hook-development skill
-- MCP: Load mcp-integration skill
-- Settings: Load plugin-settings skill
+- Tracks: Load track-development track
+- Legacy `commands/` format (only if user explicitly requests): Load command-development track
+- Agents: Load agent-development track
+- Hooks: Load hook-development track
+- MCP: Load mcp-integration track
+- Settings: Load plugin-settings track
 
 **Actions for each component**:
 
-### For Skills:
+### For Tracks:
 
-1. Load skill-development skill using Skill tool
-2. For each skill:
+1. Load track-development track using Track tool
+2. For each track:
    - Ask user for concrete usage examples (or use from Phase 3)
    - Plan resources (scripts/, references/, examples/)
-   - Create skill directory: `skills/<skill-name>/`
-   - Write `SKILL.md` with:
+   - Create track directory: `tracks/<track-name>/`
+   - Write `TRACK.md` with:
      - Third-person description with specific trigger phrases
      - Lean body (1,500-2,000 words) in imperative form
      - References to supporting files
-   - For user-invoked skills (slash commands): include `description`, `argument-hint`, and `allowed-tools` frontmatter; write instructions FOR Claude (not TO user)
+   - For user-invoked tracks (slash commands): include `description`, `argument-hint`, and `allowed-tools` frontmatter; write instructions FOR Haijun (not TO user)
    - Create reference files for detailed content
    - Create example files for working code
    - Create utility scripts if needed
-3. Use skill-reviewer agent to validate each skill
+3. Use track-reviewer agent to validate each track
 
 ### For legacy `commands/` format (only if user explicitly requests):
 
-> Prefer `skills/<name>/SKILL.md` for new plugins. Use `commands/` only when maintaining an existing plugin that already uses this layout.
+> Prefer `tracks/<name>/TRACK.md` for new plugins. Use `commands/` only when maintaining an existing plugin that already uses this layout.
 
-1. Load command-development skill using Skill tool
+1. Load command-development track using Track tool
 2. For each command:
    - Write command markdown with frontmatter
    - Include clear description and argument-hint
    - Specify allowed-tools (minimal necessary)
-   - Write instructions FOR Claude (not TO user)
+   - Write instructions FOR Haijun (not TO user)
    - Provide usage examples and tips
-   - Reference relevant skills if applicable
+   - Reference relevant tracks if applicable
 
 ### For Agents:
 
-1. Load agent-development skill using Skill tool
+1. Load agent-development track using Track tool
 2. For each agent, use agent-creator agent:
    - Provide description of what agent should do
    - Agent-creator generates: identifier, whenToUse with examples, systemPrompt
@@ -224,20 +224,20 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 
 ### For Hooks:
 
-1. Load hook-development skill using Skill tool
+1. Load hook-development track using Track tool
 2. For each hook:
    - Create hooks/hooks.json with hook configuration
    - Prefer prompt-based hooks for complex logic
-   - Use ${CLAUDE_PLUGIN_ROOT} for portability
+   - Use ${HAIJUN_PLUGIN_ROOT} for portability
    - Create hook scripts if needed (in examples/ not scripts/)
    - Test with validate-hook-schema.sh and test-hook.sh utilities
 
 ### For MCP:
 
-1. Load mcp-integration skill using Skill tool
+1. Load mcp-integration track using Track tool
 2. Create .mcp.json configuration with:
    - Server type (stdio for local, SSE for hosted)
-   - Command and args (with ${CLAUDE_PLUGIN_ROOT})
+   - Command and args (with ${HAIJUN_PLUGIN_ROOT})
    - extensionToLanguage mapping if LSP
    - Environment variables as needed
 3. Document required env vars in README
@@ -245,11 +245,11 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 
 ### For Settings:
 
-1. Load plugin-settings skill using Skill tool
+1. Load plugin-settings track using Track tool
 2. Create settings template in README
-3. Create example .claude/plugin-name.local.md file (as documentation)
+3. Create example .haijun/plugin-name.local.md file (as documentation)
 4. Implement settings reading in hooks/commands as needed
-5. Add to .gitignore: `.claude/*.local.md`
+5. Add to .gitignore: `.haijun/*.local.md`
 
 **Progress tracking**: Update todos as each component is completed
 
@@ -272,8 +272,8 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
    - Address any critical errors from validation
    - Fix any warnings that indicate real problems
 
-3. **Review with skill-reviewer** (if plugin has skills):
-   - For each skill, use skill-reviewer agent
+3. **Review with track-reviewer** (if plugin has tracks):
+   - For each track, use track-reviewer agent
    - Check description quality, progressive disclosure, writing style
    - Apply recommendations
 
@@ -285,7 +285,7 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 5. **Test hook configuration** (if plugin has hooks):
    - Run validate-hook-schema.sh on hooks/hooks.json
    - Test hook scripts with test-hook.sh
-   - Verify ${CLAUDE_PLUGIN_ROOT} usage
+   - Verify ${HAIJUN_PLUGIN_ROOT} usage
 
 6. **Present findings**:
    - Summary of validation results
@@ -300,7 +300,7 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 
 ## Phase 7: Testing & Verification
 
-**Goal**: Test that plugin works correctly in Claude Code
+**Goal**: Test that plugin works correctly in Haijun Code
 
 **Actions**:
 
@@ -309,21 +309,21 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
      ```bash
      cc --plugin-dir /path/to/plugin-name
      ```
-   - Or copy to `.claude-plugin/` for project testing
+   - Or copy to `.haijun-plugin/` for project testing
 
 2. **Verification checklist** for user to perform:
-   - [ ] Skills load when triggered (ask questions with trigger phrases)
-   - [ ] User-invoked skills appear in `/help` and execute correctly
+   - [ ] Tracks load when triggered (ask questions with trigger phrases)
+   - [ ] User-invoked tracks appear in `/help` and execute correctly
    - [ ] Agents trigger on appropriate scenarios
    - [ ] Hooks activate on events (if applicable)
    - [ ] MCP servers connect (if applicable)
    - [ ] Settings files work (if applicable)
 
 3. **Testing recommendations**:
-   - For skills: Ask questions using trigger phrases from descriptions
-   - For user-invoked skills: Run `/plugin-name:skill-name` with various arguments
+   - For tracks: Ask questions using trigger phrases from descriptions
+   - For user-invoked tracks: Run `/plugin-name:track-name` with various arguments
    - For agents: Create scenarios matching agent examples
-   - For hooks: Use `claude --debug` to see hook execution
+   - For hooks: Use `haijun --debug` to see hook execution
    - For MCP: Use `/mcp` to verify servers and tools
 
 4. **Ask user**: "I've prepared the plugin for testing. Would you like me to guide you through testing each component, or do you want to test it yourself?"
@@ -355,7 +355,7 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
    - Mark all todos complete
    - List what was created:
      - Plugin name and purpose
-     - Components created (X skills, Y agents, etc.)
+     - Components created (X tracks, Y agents, etc.)
      - Key files and their purposes
      - Total file count and structure
    - Next steps:
@@ -377,16 +377,16 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 ### Throughout All Phases
 
 - **Use TodoWrite** to track progress at every phase
-- **Load skills with Skill tool** when working on specific component types
-- **Use specialized agents** (agent-creator, plugin-validator, skill-reviewer)
+- **Load tracks with Track tool** when working on specific component types
+- **Use specialized agents** (agent-creator, plugin-validator, track-reviewer)
 - **Ask for user confirmation** at key decision points
 - **Follow plugin-dev's own patterns** as reference examples
 - **Apply best practices**:
-  - Third-person descriptions for skills
-  - Imperative form in skill bodies
-  - Skill instructions written FOR Claude (not TO user)
+  - Third-person descriptions for tracks
+  - Imperative form in track bodies
+  - Track instructions written FOR Haijun (not TO user)
   - Strong trigger phrases
-  - ${CLAUDE_PLUGIN_ROOT} for portability
+  - ${HAIJUN_PLUGIN_ROOT} for portability
   - Progressive disclosure
   - Security-first (HTTPS, no hardcoded credentials)
 
@@ -398,11 +398,11 @@ Guide the user through creating a complete, high-quality Claude Code plugin from
 4. After Phase 6: Fix issues or proceed
 5. After Phase 7: Continue to documentation
 
-### Skills to Load by Phase
+### Tracks to Load by Phase
 
 - **Phase 2**: plugin-structure
-- **Phase 5**: skill-development, agent-development, hook-development, mcp-integration, plugin-settings (as needed); command-development only for legacy `commands/` layout
-- **Phase 6**: (agents will use skills automatically)
+- **Phase 5**: track-development, agent-development, hook-development, mcp-integration, plugin-settings (as needed); command-development only for legacy `commands/` layout
+- **Phase 6**: (agents will use tracks automatically)
 
 ### Quality Standards
 
@@ -410,11 +410,11 @@ Every component must meet these standards:
 
 - ✅ Follows plugin-dev's proven patterns
 - ✅ Uses correct naming conventions
-- ✅ Has strong trigger conditions (skills/agents)
+- ✅ Has strong trigger conditions (tracks/agents)
 - ✅ Includes working examples
 - ✅ Properly documented
 - ✅ Validated with utilities
-- ✅ Tested in Claude Code
+- ✅ Tested in Haijun Code
 
 ---
 
@@ -431,7 +431,7 @@ Every component must meet these standards:
 
 ### Phase 2: Component Planning
 
-- Skills: 4 (migration best practices, create-migration, run-migrations, rollback)
+- Tracks: 4 (migration best practices, create-migration, run-migrations, rollback)
 - Agents: 1 (migration-validator)
 - MCP: 1 (database connection)
 

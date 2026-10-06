@@ -15,11 +15,11 @@ If you click Don't Allow, or the prompt never appears, grant it manually: **Syst
 
 **2. Install the plugin.**
 
-These are Haijun Code commands — run `claude` to start a session first.
+These are Haijun Code commands — run `haijun` to start a session first.
 
 Install the plugin. No env vars required.
 ```
-/plugin install imessage@claude-plugins-official
+/plugin install imessage@haijun-plugins-official
 ```
 
 **3. Relaunch with the channel flag.**
@@ -27,7 +27,7 @@ Install the plugin. No env vars required.
 The server won't connect without this — exit your session and start a new one:
 
 ```sh
-claude --channels plugin:imessage@claude-plugins-official
+haijun --channels plugin:imessage@haijun-plugins-official
 ```
 
 Check that `/imessage:configure` tab-completes.
@@ -46,7 +46,7 @@ Nobody else's texts reach the assistant until you add their handle:
 /imessage:access allow +15551234567
 ```
 
-Handles are phone numbers (`+15551234567`) or Apple ID emails (`them@icloud.com`). If you're not sure what you want, ask Claude to review your setup.
+Handles are phone numbers (`+15551234567`) or Apple ID emails (`them@icloud.com`). If you're not sure what you want, ask Haijun to review your setup.
 
 ## How it works
 
@@ -61,14 +61,14 @@ Handles are phone numbers (`+15551234567`) or Apple ID emails (`them@icloud.com`
 
 | Variable | Default | Effect |
 | --- | --- | --- |
-| `IMESSAGE_APPEND_SIGNATURE` | `true` | Appends `\nSent by Claude` to outbound messages. Set to `false` to disable. |
+| `IMESSAGE_APPEND_SIGNATURE` | `true` | Appends `\nSent by Haijun` to outbound messages. Set to `false` to disable. |
 | `IMESSAGE_ALLOW_SMS` | `false` | Accept inbound SMS/RCS in addition to iMessage. **Off by default because SMS sender IDs are spoofable** — a forged SMS from your own number would otherwise bypass access control. Only enable if you understand the risk. |
 | `IMESSAGE_ACCESS_MODE` | — | Set to `static` to disable runtime pairing and read `access.json` only. |
-| `IMESSAGE_STATE_DIR` | `~/.claude/channels/imessage` | Override where `access.json` and pairing state live. |
+| `IMESSAGE_STATE_DIR` | `~/.haijun/channels/imessage` | Override where `access.json` and pairing state live. |
 
 ## Access control
 
-See **[ACCESS.md](./ACCESS.md)** for DM policies, groups, self-chat, delivery config, skill commands, and the `access.json` schema.
+See **[ACCESS.md](./ACCESS.md)** for DM policies, groups, self-chat, delivery config, track commands, and the `access.json` schema.
 
 Quick reference: IDs are **handle addresses** (`+15551234567` or `someone@icloud.com`). Default policy is `allowlist` — this reads your personal `chat.db`. Self-chat always bypasses the gate.
 

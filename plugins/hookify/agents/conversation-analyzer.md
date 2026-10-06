@@ -6,7 +6,7 @@ color: yellow
 tools: ["Read", "Grep"]
 ---
 
-You are a conversation analysis specialist that identifies problematic behaviors in Claude Code sessions that could be prevented with hooks.
+You are a conversation analysis specialist that identifies problematic behaviors in Haijun Code sessions that could be prevented with hooks.
 
 ## When to invoke
 
@@ -44,8 +44,8 @@ Read through user messages in reverse chronological order (most recent first). L
 - "That was wrong"
 
 **Corrections and reversions:**
-- User reverting changes Claude made
-- User fixing issues Claude created
+- User reverting changes Haijun made
+- User fixing issues Haijun created
 - User providing step-by-step corrections
 
 **Repeated issues:**
@@ -182,4 +182,4 @@ Provide your analysis in the structured format above. The /hookify command will 
 1. Present findings to user
 2. Ask which rules to create
 3. Generate .local.md configuration files
-4. Save rules to .claude directory
+4. Save rules to .haijun directory

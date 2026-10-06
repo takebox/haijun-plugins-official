@@ -3,24 +3,24 @@ name: Validate Plugins
 on:
   pull_request:
     paths:
-      - '.claude-plugin/**'
-      - '*/.claude-plugin/**'
+      - '.haijun-plugin/**'
+      - '*/.haijun-plugin/**'
       - '*/agents/**'
-      - '*/skills/**'
+      - '*/tracks/**'
       - '*/commands/**'
       # Vendored plugins live TWO levels deep (plugins/<name>/, external_plugins/<name>/),
       # and `*` doesn't cross a `/` — so the one-level patterns above never match them.
-      # Without these, a PR touching only e.g. plugins/<name>/.claude-plugin/plugin.json
+      # Without these, a PR touching only e.g. plugins/<name>/.haijun-plugin/plugin.json
       # (a manifest version bump) fires nothing and the required `validate` check sits
       # "Expected — Waiting for status to be reported" forever (PR #5416 hit this; same
       # per-level spell-out as the README/assets entries below).
-      - 'plugins/*/.claude-plugin/**'
+      - 'plugins/*/.haijun-plugin/**'
       - 'plugins/*/agents/**'
-      - 'plugins/*/skills/**'
+      - 'plugins/*/tracks/**'
       - 'plugins/*/commands/**'
-      - 'external_plugins/*/.claude-plugin/**'
+      - 'external_plugins/*/.haijun-plugin/**'
       - 'external_plugins/*/agents/**'
-      - 'external_plugins/*/skills/**'
+      - 'external_plugins/*/tracks/**'
       - 'external_plugins/*/commands/**'
       # `validate` is a required status check, so a PR that touches ONLY workflow
       # files (e.g. an action-SHA re-pin) would otherwise never trigger validate
@@ -59,7 +59,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.claude-plugin/**'
+      - '.haijun-plugin/**'
   # `validate` is a required status check on main. Bump PRs are opened with
   # GITHUB_TOKEN, which doesn't fire on:pull_request (recursion guard), so the
   # path-filtered trigger above never reports on them and the PR would be
@@ -80,11 +80,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: anthropics/claude-plugins-community/.github/actions/validate-plugins@426e469f322952061102b286b378c0c9733a0934
+      - uses: takebox/haijun-plugins-community/.github/actions/validate-plugins@426e469f322952061102b286b378c0c9733a0934
         with:
-          marketplace-path: .claude-plugin/marketplace.json
+          marketplace-path: .haijun-plugin/marketplace.json
           # Official curated marketplace: SHA-pin (I5) is a HARD error.
           # I8/I11 are warnings until the 15 known vendored-path/name issues
           # are cleaned up (see PR body); tighten to "I1 I3" after.
           warn-invariants: "I1 I3 I8 I11"
-          claude-cli-version: latest
+          haijun-cli-version: latest

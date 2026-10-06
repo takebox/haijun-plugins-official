@@ -1,6 +1,6 @@
 # Code Modernization Plugin
 
-Point Claude at a legacy codebase — COBOL, legacy Java/C++/.NET, monolith web apps — and get back: an executive assessment, an interactive architecture map, the business rules mined out of the code, a steering-committee-ready modernization brief, and scaffolded or transformed new code with a behavior-equivalence test harness so you can prove nothing drifted.
+Point Haijun at a legacy codebase — COBOL, legacy Java/C++/.NET, monolith web apps — and get back: an executive assessment, an interactive architecture map, the business rules mined out of the code, a steering-committee-ready modernization brief, and scaffolded or transformed new code with a behavior-equivalence test harness so you can prove nothing drifted.
 
 It works by enforcing a sequence, because modernization usually fails when teams skip steps — transforming code before understanding it, or shipping without a harness to catch behavior drift:
 
@@ -19,7 +19,7 @@ The discovery commands (`assess`, `map`, `extract-rules`) write artifacts to `an
 ## Install
 
 ```
-/plugin install code-modernization@claude-plugins-official
+/plugin install code-modernization@haijun-plugins-official
 ```
 
 ## Quickstart
@@ -83,7 +83,7 @@ Specialist subagents invoked by the commands (or directly):
 
 ## Recommended workspace setup
 
-A `.claude/settings.json` in the project you're modernizing enforces the core invariant — never touch `legacy/`, freely edit `analysis/` and `modernized/`:
+A `.haijun/settings.json` in the project you're modernizing enforces the core invariant — never touch `legacy/`, freely edit `analysis/` and `modernized/`:
 
 ```json
 {

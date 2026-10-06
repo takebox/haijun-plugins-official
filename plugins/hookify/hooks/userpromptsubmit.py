@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """UserPromptSubmit hook executor for hookify plugin.
 
-This script is called by Claude Code when user submits a prompt.
-It reads .claude/hookify.*.local.md files and evaluates rules.
+This script is called by Haijun Code when user submits a prompt.
+It reads .haijun/hookify.*.local.md files and evaluates rules.
 """
 
 import os
@@ -10,7 +10,7 @@ import sys
 import json
 
 # Add plugin root to Python path for imports
-PLUGIN_ROOT = os.environ.get('CLAUDE_PLUGIN_ROOT')
+PLUGIN_ROOT = os.environ.get('HAIJUN_PLUGIN_ROOT')
 if PLUGIN_ROOT and PLUGIN_ROOT not in sys.path:
     sys.path.insert(0, PLUGIN_ROOT)
 

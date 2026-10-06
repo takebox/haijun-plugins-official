@@ -4,17 +4,17 @@ A comprehensive toolkit for developing Haijun Code plugins with expert guidance 
 
 ## Overview
 
-The plugin-dev toolkit provides seven specialized skills to help you build high-quality Haijun Code plugins:
+The plugin-dev toolkit provides seven specialized tracks to help you build high-quality Haijun Code plugins:
 
 1. **hook-development** - Advanced hooks API and event-driven automation
 2. **mcp-integration** - Model Context Protocol server integration
 3. **plugin-structure** - Plugin organization and manifest configuration
-4. **plugin-settings** - Configuration patterns using .claude/plugin-name.local.md files
+4. **plugin-settings** - Configuration patterns using .haijun/plugin-name.local.md files
 5. **command-development** - Creating slash commands with frontmatter and arguments
 6. **agent-development** - Creating autonomous agents with AI-assisted generation
-7. **skill-development** - Creating skills with progressive disclosure and strong triggers
+7. **track-development** - Creating tracks with progressive disclosure and strong triggers
 
-Each skill follows best practices with progressive disclosure: lean core documentation, detailed references, working examples, and utility scripts.
+Each track follows best practices with progressive disclosure: lean core documentation, detailed references, working examples, and utility scripts.
 
 ## Guided Workflow Command
 
@@ -24,7 +24,7 @@ A comprehensive, end-to-end workflow command for creating plugins from scratch, 
 
 **8-Phase Process:**
 1. **Discovery** - Understand plugin purpose and requirements
-2. **Component Planning** - Determine needed skills, commands, agents, hooks, MCP
+2. **Component Planning** - Determine needed tracks, commands, agents, hooks, MCP
 3. **Detailed Design** - Specify each component and resolve ambiguities
 4. **Structure Creation** - Set up directories and manifest
 5. **Component Implementation** - Create each component using AI-assisted agents
@@ -34,7 +34,7 @@ A comprehensive, end-to-end workflow command for creating plugins from scratch, 
 
 **Features:**
 - Asks clarifying questions at each phase
-- Loads relevant skills automatically
+- Loads relevant tracks automatically
 - Uses agent-creator for AI-assisted agent generation
 - Runs validation utilities (validate-agent.sh, validate-hook-schema.sh, etc.)
 - Follows plugin-dev's own proven patterns
@@ -51,11 +51,11 @@ A comprehensive, end-to-end workflow command for creating plugins from scratch, 
 
 Use this workflow for structured, high-quality plugin development from concept to completion.
 
-## Skills
+## Tracks
 
 ### 1. hook-development
 
-**Trigger phrases:** "create a hook", "add a PreToolUse hook", "validate tool use", "implement prompt-based hooks", "${CLAUDE_PLUGIN_ROOT}", "block dangerous commands"
+**Trigger phrases:** "create a hook", "add a PreToolUse hook", "validate tool use", "implement prompt-based hooks", "${HAIJUN_PLUGIN_ROOT}", "block dangerous commands"
 
 **What it covers:**
 - Prompt-based hooks (recommended) with LLM decision-making
@@ -63,10 +63,10 @@ Use this workflow for structured, high-quality plugin development from concept t
 - All hook events: PreToolUse, PostToolUse, Stop, SubagentStop, SessionStart, SessionEnd, UserPromptSubmit, PreCompact, Notification
 - Hook output formats and JSON schemas
 - Security best practices and input validation
-- ${CLAUDE_PLUGIN_ROOT} for portable paths
+- ${HAIJUN_PLUGIN_ROOT} for portable paths
 
 **Resources:**
-- Core SKILL.md (1,619 words)
+- Core TRACK.md (1,619 words)
 - 3 example hook scripts (validate-write, validate-bash, load-context)
 - 3 reference docs: patterns, migration, advanced techniques
 - 3 utility scripts: validate-hook-schema.sh, test-hook.sh, hook-linter.sh
@@ -80,13 +80,13 @@ Use this workflow for structured, high-quality plugin development from concept t
 **What it covers:**
 - MCP server configuration (.mcp.json vs plugin.json)
 - All server types: stdio (local), SSE (hosted/OAuth), HTTP (REST), WebSocket (real-time)
-- Environment variable expansion (${CLAUDE_PLUGIN_ROOT}, user vars)
+- Environment variable expansion (${HAIJUN_PLUGIN_ROOT}, user vars)
 - MCP tool naming and usage in commands/agents
 - Authentication patterns: OAuth, tokens, env vars
 - Integration patterns and performance optimization
 
 **Resources:**
-- Core SKILL.md (1,666 words)
+- Core TRACK.md (1,666 words)
 - 3 example configurations (stdio, SSE, HTTP)
 - 3 reference docs: server-types (~3,200w), authentication (~2,800w), tool-usage (~2,600w)
 
@@ -99,13 +99,13 @@ Use this workflow for structured, high-quality plugin development from concept t
 **What it covers:**
 - Standard plugin directory structure and auto-discovery
 - plugin.json manifest format and all fields
-- Component organization (commands, agents, skills, hooks)
-- ${CLAUDE_PLUGIN_ROOT} usage throughout
+- Component organization (commands, agents, tracks, hooks)
+- ${HAIJUN_PLUGIN_ROOT} usage throughout
 - File naming conventions and best practices
 - Minimal, standard, and advanced plugin patterns
 
 **Resources:**
-- Core SKILL.md (1,619 words)
+- Core TRACK.md (1,619 words)
 - 3 example structures (minimal, standard, advanced)
 - 2 reference docs: component-patterns, manifest-reference
 
@@ -116,7 +116,7 @@ Use this workflow for structured, high-quality plugin development from concept t
 **Trigger phrases:** "plugin settings", "store plugin configuration", ".local.md files", "plugin state files", "read YAML frontmatter", "per-project plugin settings"
 
 **What it covers:**
-- .claude/plugin-name.local.md pattern for configuration
+- .haijun/plugin-name.local.md pattern for configuration
 - YAML frontmatter + markdown body structure
 - Parsing techniques for bash scripts (sed, awk, grep patterns)
 - Temporarily active hooks (flag files and quick-exit)
@@ -125,7 +125,7 @@ Use this workflow for structured, high-quality plugin development from concept t
 - Gitignore and lifecycle management
 
 **Resources:**
-- Core SKILL.md (1,623 words)
+- Core TRACK.md (1,623 words)
 - 3 examples (read-settings hook, create-settings command, templates)
 - 2 reference docs: parsing-techniques, real-world-examples
 - 2 utility scripts: validate-settings.sh, parse-frontmatter.sh
@@ -145,7 +145,7 @@ Use this workflow for structured, high-quality plugin development from concept t
 - Best practices for command development
 
 **Resources:**
-- Core SKILL.md (1,535 words)
+- Core TRACK.md (1,535 words)
 - Examples and reference documentation
 - Command organization patterns
 
@@ -165,40 +165,40 @@ Use this workflow for structured, high-quality plugin development from concept t
 - Complete production-ready agent examples
 
 **Resources:**
-- Core SKILL.md (1,438 words)
+- Core TRACK.md (1,438 words)
 - 2 examples: agent-creation-prompt (AI-assisted workflow), complete-agent-examples (4 full agents)
 - 3 reference docs: agent-creation-system-prompt (from Haijun Code), system-prompt-design (~4,000w), triggering-examples (~2,500w)
 - 1 utility script: validate-agent.sh
 
 **Use when:** Creating autonomous agents, defining agent behavior, or implementing AI-assisted agent generation.
 
-### 7. skill-development
+### 7. track-development
 
-**Trigger phrases:** "create a skill", "add a skill to plugin", "write a new skill", "improve skill description", "organize skill content"
+**Trigger phrases:** "create a track", "add a track to plugin", "write a new track", "improve track description", "organize track content"
 
 **What it covers:**
-- Skill structure (SKILL.md with YAML frontmatter)
-- Progressive disclosure principle (metadata → SKILL.md → resources)
+- Track structure (TRACK.md with YAML frontmatter)
+- Progressive disclosure principle (metadata → TRACK.md → resources)
 - Strong trigger descriptions with specific phrases
 - Writing style (imperative/infinitive form, third person)
 - Bundled resources organization (references/, examples/, scripts/)
-- Skill creation workflow
-- Based on skill-creator methodology adapted for Haijun Code plugins
+- Track creation workflow
+- Based on track-creator methodology adapted for Haijun Code plugins
 
 **Resources:**
-- Core SKILL.md (1,232 words)
-- References: skill-creator methodology, plugin-dev patterns
-- Examples: Study plugin-dev's own skills as templates
+- Core TRACK.md (1,232 words)
+- References: track-creator methodology, plugin-dev patterns
+- Examples: Study plugin-dev's own tracks as templates
 
-**Use when:** Creating new skills for plugins or improving existing skill quality.
+**Use when:** Creating new tracks for plugins or improving existing track quality.
 
 
 ## Installation
 
-Install from claude-code-marketplace:
+Install from haijun-code-marketplace:
 
 ```bash
-/plugin install plugin-dev@claude-code-marketplace
+/plugin install plugin-dev@haijun-code-marketplace
 ```
 
 Or for development, use directly:
@@ -213,15 +213,15 @@ cc --plugin-dir /path/to/plugin-dev
 
 1. **Plan your plugin structure:**
    - Ask: "What's the best directory structure for a plugin with commands and MCP integration?"
-   - The plugin-structure skill will guide you
+   - The plugin-structure track will guide you
 
 2. **Add MCP integration (if needed):**
    - Ask: "How do I add an MCP server for database access?"
-   - The mcp-integration skill provides examples and patterns
+   - The mcp-integration track provides examples and patterns
 
 3. **Implement hooks (if needed):**
    - Ask: "Create a PreToolUse hook that validates file writes"
-   - The hook-development skill gives working examples and utilities
+   - The hook-development track gives working examples and utilities
 
 
 ## Development Workflow
@@ -230,23 +230,23 @@ The plugin-dev toolkit supports your entire plugin development lifecycle:
 
 ```
 ┌─────────────────────┐
-│  Design Structure   │  → plugin-structure skill
+│  Design Structure   │  → plugin-structure track
 │  (manifest, layout) │
 └──────────┬──────────┘
            │
 ┌──────────▼──────────┐
 │  Add Components     │
-│  (commands, agents, │  → All skills provide guidance
-│   skills, hooks)    │
+│  (commands, agents, │  → All tracks provide guidance
+│   tracks, hooks)    │
 └──────────┬──────────┘
            │
 ┌──────────▼──────────┐
-│  Integrate Services │  → mcp-integration skill
+│  Integrate Services │  → mcp-integration track
 │  (MCP servers)      │
 └──────────┬──────────┘
            │
 ┌──────────▼──────────┐
-│  Add Automation     │  → hook-development skill
+│  Add Automation     │  → hook-development track
 │  (hooks, validation)│     + utility scripts
 └──────────┬──────────┘
            │
@@ -261,16 +261,16 @@ The plugin-dev toolkit supports your entire plugin development lifecycle:
 
 ### Progressive Disclosure
 
-Each skill uses a three-level disclosure system:
+Each track uses a three-level disclosure system:
 1. **Metadata** (always loaded): Concise descriptions with strong triggers
-2. **Core SKILL.md** (when triggered): Essential API reference (~1,500-2,000 words)
+2. **Core TRACK.md** (when triggered): Essential API reference (~1,500-2,000 words)
 3. **References/Examples** (as needed): Detailed guides, patterns, and working code
 
 This keeps Haijun Code's context focused while providing deep knowledge when needed.
 
 ### Utility Scripts
 
-The hook-development skill includes production-ready utilities:
+The hook-development track includes production-ready utilities:
 
 ```bash
 # Validate hooks.json structure
@@ -285,7 +285,7 @@ The hook-development skill includes production-ready utilities:
 
 ### Working Examples
 
-Every skill provides working examples:
+Every track provides working examples:
 - **hook-development**: 3 complete hook scripts (bash, write validation, context loading)
 - **mcp-integration**: 3 server configurations (stdio, SSE, HTTP)
 - **plugin-structure**: 3 plugin layouts (minimal, standard, advanced)
@@ -294,8 +294,8 @@ Every skill provides working examples:
 
 ## Documentation Standards
 
-All skills follow consistent standards:
-- Third-person descriptions ("This skill should be used when...")
+All tracks follow consistent standards:
+- Third-person descriptions ("This track should be used when...")
 - Strong trigger phrases for reliable loading
 - Imperative/infinitive form throughout
 - Based on official Haijun Code documentation
@@ -303,7 +303,7 @@ All skills follow consistent standards:
 
 ## Total Content
 
-- **Core Skills**: ~11,065 words across 7 SKILL.md files
+- **Core Tracks**: ~11,065 words across 7 TRACK.md files
 - **Reference Docs**: ~10,000+ words of detailed guides
 - **Examples**: 12+ working examples (hook scripts, MCP configs, plugin layouts, settings files)
 - **Utilities**: 6 production-ready validation/testing/parsing scripts
@@ -314,13 +314,13 @@ All skills follow consistent standards:
 
 ```
 1. "What's the structure for a plugin with MCP integration?"
-   → plugin-structure skill provides layout
+   → plugin-structure track provides layout
 
 2. "How do I configure an stdio MCP server for PostgreSQL?"
-   → mcp-integration skill shows configuration
+   → mcp-integration track shows configuration
 
 3. "Add a Stop hook to ensure connections close properly"
-   → hook-development skill provides pattern
+   → hook-development track provides pattern
 
 ```
 
@@ -328,13 +328,13 @@ All skills follow consistent standards:
 
 ```
 1. "Create hooks that validate all file writes for security"
-   → hook-development skill with examples
+   → hook-development track with examples
 
 2. "Test my hooks before deploying"
    → Use validate-hook-schema.sh and test-hook.sh
 
 3. "Organize my hooks and configuration files"
-   → plugin-structure skill shows best practices
+   → plugin-structure track shows best practices
 
 ```
 
@@ -342,18 +342,18 @@ All skills follow consistent standards:
 
 ```
 1. "Add Asana MCP server with OAuth"
-   → mcp-integration skill covers SSE servers
+   → mcp-integration track covers SSE servers
 
 2. "Use Asana tools in my commands"
    → mcp-integration tool-usage reference
 
 3. "Structure my plugin with commands and MCP"
-   → plugin-structure skill provides patterns
+   → plugin-structure track provides patterns
 ```
 
 ## Best Practices
 
-All skills emphasize:
+All tracks emphasize:
 
 ✅ **Security First**
 - Input validation in hooks
@@ -362,14 +362,14 @@ All skills emphasize:
 - Principle of least privilege
 
 ✅ **Portability**
-- Use ${CLAUDE_PLUGIN_ROOT} everywhere
+- Use ${HAIJUN_PLUGIN_ROOT} everywhere
 - Relative paths only
 - Environment variable substitution
 
 ✅ **Testing**
 - Validate configurations before deployment
 - Test hooks with sample inputs
-- Use debug mode (`claude --debug`)
+- Use debug mode (`haijun --debug`)
 
 ✅ **Documentation**
 - Clear README files
@@ -378,7 +378,7 @@ All skills emphasize:
 
 ## Contributing
 
-This plugin is part of the claude-code-marketplace. To contribute improvements:
+This plugin is part of the haijun-code-marketplace. To contribute improvements:
 
 1. Fork the marketplace repository
 2. Make changes to plugin-dev/
@@ -387,11 +387,11 @@ This plugin is part of the claude-code-marketplace. To contribute improvements:
 
 ## Version
 
-0.1.0 - Initial release with seven comprehensive skills and three validation agents
+0.1.0 - Initial release with seven comprehensive tracks and three validation agents
 
 ## Author
 
-Daisy Hollman (daisy@anthropic.com)
+Daisy Hollman (daisy@Takebox AI.com)
 
 ## License
 
@@ -399,4 +399,4 @@ MIT License - See repository for details
 
 ---
 
-**Note:** This toolkit is designed to help you build high-quality plugins. The skills load automatically when you ask relevant questions, providing expert guidance exactly when you need it.
+**Note:** This toolkit is designed to help you build high-quality plugins. The tracks load automatically when you ask relevant questions, providing expert guidance exactly when you need it.

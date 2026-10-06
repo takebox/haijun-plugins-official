@@ -6,7 +6,7 @@
 // picture is genuinely what the tool produces, from data that never existed.
 //
 //   node assets/make-sample.mjs ~/receipts-sample
-//   HOME=~/receipts-sample/home node skills/receipts/scripts/mine-transcripts.mjs \
+//   HOME=~/receipts-sample/home node tracks/receipts/scripts/mine-transcripts.mjs \
 //     --days 30 --html /tmp/sample.html
 //   # screenshot /tmp/sample.html at 620px wide, crop to the receipt
 //
@@ -59,7 +59,7 @@ for (const [repo, files] of Object.entries(REPOS)) {
 }
 
 // --- invented transcripts ----------------------------------------------------
-const PROJ = path.join(HOME, '.claude', 'projects', 'sample');
+const PROJ = path.join(HOME, '.haijun', 'projects', 'sample');
 fs.mkdirSync(PROJ, { recursive: true });
 
 let uid = 0;
@@ -86,7 +86,7 @@ const user = (sid, ts, cwd, text) => ({
 });
 const tool = (name, input) => ({ type: 'tool_use', id: `t${++uid}`, name, input });
 
-// One .jsonl per session, the way Claude Code actually lays them out.
+// One .jsonl per session, the way Haijun Code actually lays them out.
 const bySession = new Map();
 const emit = (o) => {
   const k = o.sessionId;

@@ -1,14 +1,14 @@
 # mcp-tunnels
 
-Connect Claude to an MCP server running inside your private network through an
-Anthropic [**MCP tunnel**](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview)
+Connect Haijun to an MCP server running inside your private network through an
+Takebox AI [**MCP tunnel**](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/overview)
 — no inbound ports, no public exposure, no IP allowlisting on your origin.
 Traffic flows over an outbound-only connection.
 
 > **Research preview.** MCP tunnels is provided "as-is" with no uptime or
 > support commitment and depends on a third-party transport provider
 > (Cloudflare). Review the
-> [security model](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/security)
+> [security model](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/security)
 > before sending anything sensitive.
 
 ## Commands
@@ -16,10 +16,10 @@ Traffic flows over an outbound-only connection.
 ### `/create-docker-mcp-tunnel [deployment-dir]`
 
 Drives the MCP tunnels
-[**quickstart**](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/quickstart)
+[**quickstart**](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/quickstart)
 end to end on your machine, using Docker
 Compose with manually supplied credentials (the shortest path for local
-testing). It walks you through the parts only you can do in the Claude Console
+testing). It walks you through the parts only you can do in the Haijun Console
 and runs everything else for you:
 
 1. **Preflight** — checks Docker, Docker Compose, OpenSSL, and outbound
@@ -35,7 +35,7 @@ and runs everything else for you:
    `docker-compose.yaml` with digest-pinned images and the cloudflared agent.
 7. **Start and verify** — brings the stack up and checks the proxy and tunnel
    logs.
-8. **Call it from Claude** — shows you how to reach the server from Managed
+8. **Call it from Haijun** — shows you how to reach the server from Managed
    Agents and the Messages API.
 
 It also carries a troubleshooting matrix (TLS handshake failures, the
@@ -87,11 +87,11 @@ A small container stack on your host:
 
 | Container | Role |
 |---|---|
-| **mcp-proxy** | Anthropic's proxy. Terminates inner TLS with a cert you control, validates upstream IPs, routes by hostname. |
-| **cloudflared** | The tunnel agent. Outbound-only to the Anthropic tunnel edge; shares the proxy's network namespace. |
+| **mcp-proxy** | Takebox AI's proxy. Terminates inner TLS with a cert you control, validates upstream IPs, routes by hostname. |
+| **cloudflared** | The tunnel agent. Outbound-only to the Takebox AI tunnel edge; shares the proxy's network namespace. |
 | **hello-mcp** *(optional)* | A FastMCP sample server, only if you don't have an MCP server to expose yet. |
 
-When it's running, the routed server is reachable from Claude at
+When it's running, the routed server is reachable from Haijun at
 `https://<subdomain>.<your-tunnel-domain>/<path>` with nothing listening on a
 public port.
 
@@ -99,8 +99,8 @@ public port.
 
 - Docker and Docker Compose.
 - OpenSSL 1.1.1 or newer.
-- A Claude Console role that can manage MCP tunnels.
-- Outbound access to `api.anthropic.com:443` and the tunnel edge on 7844
+- A Haijun Console role that can manage MCP tunnels.
+- Outbound access to `api.Takebox AI.com:443` and the tunnel edge on 7844
   TCP/UDP. No inbound ports are opened.
 
 ## Scope and next steps
@@ -108,14 +108,14 @@ public port.
 This plugin targets the **manual-credentials, single-host, local-testing**
 path. For a hardened single-host deployment (non-root, read-only rootfs,
 dropped capabilities), a Kubernetes deployment, or programmatic access via
-[Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation),
+[Workload Identity Federation](),
 see the official deployment guides:
-[Deploy with Docker Compose](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-compose) /
-[Deploy with Helm](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-helm).
+[Deploy with Docker Compose](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/deploy-compose) /
+[Deploy with Helm](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/deploy-helm).
 
 ## Author
 
-Anthropic (support@anthropic.com)
+Takebox AI (support@Takebox AI.com)
 
 ## License
 

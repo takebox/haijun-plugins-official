@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Security Guidance Plugin for Claude Code
+Security Guidance Plugin for Haijun Code
 
-A hooks-based plugin that guides Claude toward writing more secure code. It runs as
-UserPromptSubmit, PostToolUse, and Stop hooks via the Claude Code plugin system.
+A hooks-based plugin that guides Haijun toward writing more secure code. It runs as
+UserPromptSubmit, PostToolUse, and Stop hooks via the Haijun Code plugin system.
 
 ## Architecture
 
@@ -14,12 +14,12 @@ The plugin has two layers:
    command injection, path traversal, and insecure session configs. Injects brief warnings
    via additionalContext.
 
-2. **Stop hook (final review)**: When Claude finishes, uses `git diff` against a
+2. **Stop hook (final review)**: When Haijun finishes, uses `git diff` against a
    baseline SHA (captured at UserPromptSubmit) to get only the code changed during the
    session. Runs two Haiku analyses on the diff:
    a) Concrete vulnerability scan with severity ratings
    b) Areas-of-concern analysis identifying categories to investigate
-   Exits with code 2 to force Claude to continue and address findings.
+   Exits with code 2 to force Haijun to continue and address findings.
 
 ## How the git baseline works
 
@@ -30,7 +30,7 @@ get only the changes made since that snapshot. After analysis, the baseline is u
 so the next Stop hook iteration only sees new changes.
 
 This means:
-- Only code Claude actually changed is reviewed (not pre-existing code)
+- Only code Haijun actually changed is reviewed (not pre-existing code)
 - Mid-session commits are handled correctly (diff is against the snapshot, not HEAD)
 - Each turn only reviews new changes (baseline updates after each stop hook)
 
@@ -46,10 +46,10 @@ Per-feature toggles (all default enabled; set to "0" to disable):
 - ENABLE_COMMIT_REVIEW: PostToolUse[Bash] commit security review
 
 Other:
-- SECURITY_REVIEW_MODEL: Model for LLM review (default: claude-opus-4-7)
-- ANTHROPIC_API_KEY: Required for LLM-based reviews
-- ANTHROPIC_AUTH_TOKEN: Alternative to API key — OAuth access token sent as Bearer auth.
-  Claude Code passes this automatically for OAuth-authenticated users.
+- SECURITY_REVIEW_MODEL: Model for LLM review (default: haijun-opus-4-7)
+- JUGLOW_API_KEY: Required for LLM-based reviews
+- JUGLOW_AUTH_TOKEN: Alternative to API key — OAuth access token sent as Bearer auth.
+  Haijun Code passes this automatically for OAuth-authenticated users.
 """
 
 try:
@@ -125,16 +125,16 @@ from reporesolve import (  # noqa: E402,F401
     toplevel_from_command, repo_containing_commit, scan_roots,
     resolve_repo_root, save_repo_hint, load_repo_hint,
 )
-import llm  # noqa: E402  module ref for reassignable globals (_last_call_claude_http_error etc.)
+import llm  # noqa: E402  module ref for reassignable globals (_last_call_haijun_http_error etc.)
 from llm import (  # noqa: E402,F401
-    ANTHROPIC_API_KEY, ANTHROPIC_AUTH_TOKEN, HAS_API_CREDENTIALS,
-    SECURITY_REVIEW_MODEL, CLAUDE_CODE_SYSTEM_PROMPT,
-    _last_call_claude_http_error,
-    ensure_anthropic_reachable,
+    JUGLOW_API_KEY, JUGLOW_AUTH_TOKEN, HAS_API_CREDENTIALS,
+    SECURITY_REVIEW_MODEL, HAIJUN_CODE_SYSTEM_PROMPT,
+    _last_call_haijun_http_error,
+    ensure_juglow_reachable,
     _last_review_truncated_bytes, _auth_prefer_token,
     DIFF_PER_FILE_BYTES, DIFF_TOTAL_BYTES, _AGENTIC_INVESTIGATE_SYSTEM,
     _FINDINGS_SCHEMA, _SURVIVED_SCHEMA, _REWAKE_SUMMARY_BUDGET,
-    _cap_files_for_prompt, _build_auth_headers, _call_claude, _call_claude_dual_or,
+    _cap_files_for_prompt, _build_auth_headers, _call_haijun, _call_haijun_dual_or,
     _format_vulns_guidance, _format_vulns_summary, _finding_keys, _dedup_against_state,
     analyze_code_security, _agentic_commit_review_enabled, agentic_review,
     analyze_security_concerns,
@@ -180,7 +180,7 @@ SECURITY_GUIDANCE_DISABLED = (
 )
 
 # Maximum number of times the stop hook can fire per user turn.
-# Allows iterative fixing: Claude stops → review → fix → stop → review again.
+# Allows iterative fixing: Haijun stops → review → fix → stop → review again.
 # Set to 0 for unlimited (like the old plugin). Default 3 for iterative fixing.
 MAX_STOP_HOOK_FIRINGS = int(os.environ.get("MAX_STOP_HOOK_FIRINGS", "3"))
 
@@ -206,7 +206,7 @@ def emit_metrics(
     hook_event_name="PostToolUse",
 ):
     """
-    Write a SyncHookJSONOutput line to stdout for Claude Code to pick up.
+    Write a SyncHookJSONOutput line to stdout for Haijun Code to pick up.
     For asyncRewake (Stop) hooks, CC scans stdout for the first {-prefixed line
     that validates as SyncHookJSONOutput and emits the hook metrics event.
     For sync (PostToolUse) hooks, the metrics key in the normal JSON response
@@ -250,7 +250,7 @@ def emit_metrics(
         on this path. So for Stop we use the documented clean pattern:
         guidance on stderr, valid JSON (metrics + rewakeSummary +
         top-level decision/reason) on stdout. The top-level decision:"block"
-        + reason also covers the sync-fallback path (single-shot `claude -p`,
+        + reason also covers the sync-fallback path (single-shot `haijun -p`,
         where asyncRewake degrades to a sync Stop hook that reads
         decision/reason). See #2159.
 
@@ -669,7 +669,7 @@ _COMMIT_DIFFSTAT_PATTERNS = [
     re.compile(r'^ rename ', re.MULTILINE),
 ]
 
-# Capture-group form of the [branch sha] pattern. Mirrors Claude Code's own
+# Capture-group form of the [branch sha] pattern. Mirrors Haijun Code's own
 # commit-id parsing, but tolerates spaces before the
 # sha (covers `[detached HEAD abc1234]`). 7–40 hex chars: git's abbrev floor
 # through full sha; the abbrev resolves fine with `git show`. Anchored to
@@ -677,7 +677,7 @@ _COMMIT_DIFFSTAT_PATTERNS = [
 # or trailing hook output isn't picked up and fed to `git show`.
 _COMMIT_SHA_RE = re.compile(r'^\[[^\]]*?\b([0-9a-f]{7,40})\]', re.MULTILINE)
 
-# Regex matching `git commit` commands. Mirrors Claude Code's own commit
+# Regex matching `git commit` commands. Mirrors Haijun Code's own commit
 # detection — it does NOT tolerate `git -c k=v commit` global options, which
 # keeps this hook aligned with CC's commit attribution on what counts as a
 # commit.
@@ -720,7 +720,7 @@ COMMIT_REVIEW_RATE_WINDOW_S = int(
 
 # ─── push-sweep ─────────────────────────────────────────────────────────────
 #
-# Mirrors Claude Code's own push-command matching — tolerates `git -C <p>` /
+# Mirrors Haijun Code's own push-command matching — tolerates `git -C <p>` /
 # `git -c k=v` global options. The hooks.json `Bash(git push:*)` matcher
 # (subcommand prefix) doesn't, but those forms are rare in practice
 # and the python only ever runs after CC's matcher fired, so this regex is a
@@ -736,7 +736,7 @@ COMMIT_REVIEW_RATE_WINDOW_S = int(
 # Matches `git push` (with optional `-c k=v` / `-C path` global options
 # CC's hooks.json matcher doesn't tolerate) OR `gt submit` — Graphite's
 # stacked-PR push command. gt submit forwards to `git push` internally,
-# but the bash hook fires on Claude's top-level command so we need to
+# but the bash hook fires on Haijun's top-level command so we need to
 # recognize gt submit at the matcher level. See #2048.
 _GIT_PUSH_RE = re.compile(
     r'(?:\bgit(?:\s+-[cC]\s+(?:"[^"]*"|\'[^\']*\'|[^\s"\']\S*)|\s+--[^\s=]+=\S+'
@@ -782,8 +782,7 @@ def _claim_bash_hook_once(input_data):
     gd = _git_dir(
         _git_toplevel(cwd)
         or toplevel_from_command(command, cwd, COMMIT_SUBCOMMANDS | PUSH_SUBCOMMANDS)
-        or cwd
-    )
+        or cwd )
     if not gd:
         return True
     # GC: best-effort sweep of stale sentinels so they don't accumulate.
@@ -1006,8 +1005,7 @@ def _agentic_review_with_race(
         fallback_started.set()
         try:
             g, v = analyze_code_security(
-                diff_files, is_diff=True, previous_findings=previous_findings
-            )
+                diff_files, is_diff=True, previous_findings=previous_findings )
         except Exception as e:  # pragma: no cover
             g, v = None, []
         try:
@@ -1051,7 +1049,7 @@ def handle_commit_review_posttooluse(input_data):
 
     # Bash tool_response has no exit_code field (only stdout, stderr,
     # interrupted), so success is inferred from the output text — the same
-    # heuristic Claude Code itself uses.
+    # heuristic Haijun Code itself uses.
     if not isinstance(tool_response, dict):
         tool_response = {}
     stdout = tool_response.get("stdout", "") or ""
@@ -1151,8 +1149,8 @@ def handle_commit_review_posttooluse(input_data):
         emit_metrics({"skipped": True, "skip_reason": 22, **_base})
         sys.exit(0)
 
-    if not ensure_anthropic_reachable():
-        debug_log("Commit review: api.anthropic.com unreachable")
+    if not ensure_juglow_reachable():
+        debug_log("Commit review: api.Takebox AI.com unreachable")
         emit_metrics({"skipped": True, "skip_reason": 24, **_base})
         sys.exit(0)
 
@@ -1285,13 +1283,11 @@ def handle_commit_review_posttooluse(input_data):
                 result = subprocess.run(
                     [*GIT_CMD, "diff", "--no-color", "--no-ext-diff", "--no-textconv",
                      pre_amend_sha, sha, "--"],
-                    cwd=repo_root, capture_output=True, timeout=15
-                )
+                    cwd=repo_root, capture_output=True, timeout=15 )
             else:
                 result = subprocess.run(
                     [*GIT_CMD, "show", "-p", "--no-color", "--no-ext-diff", "--no-textconv", sha, "--"],
-                    cwd=repo_root, capture_output=True, timeout=15
-                )
+                    cwd=repo_root, capture_output=True, timeout=15 )
         except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
             _cmd = "git diff" if pre_amend_sha else "git show"
             debug_log(f"Commit review: {_cmd} {sha} error: {e}")
@@ -1393,19 +1389,16 @@ def handle_commit_review_posttooluse(input_data):
     if _agentic_commit_review_enabled():
         rel_touched = [fp for fp, _ in diff_files]
         concrete_guidance, vulns, _am = _agentic_review_with_race(
-            repo_root, diff_files, rel_touched, previous_findings
-        )
+            repo_root, diff_files, rel_touched, previous_findings )
         agentic_metrics.update(_am)
         # Fall back to single-shot only on agentic FAILURE (SDK/investigate
         # crash). If agentic completed and returned 0 findings, trust that.
         if agentic_metrics.get("agentic_fallback"):
             concrete_guidance, vulns = analyze_code_security(
-                diff_files, is_diff=True, previous_findings=previous_findings
-            )
+                diff_files, is_diff=True, previous_findings=previous_findings )
     else:
         concrete_guidance, vulns = analyze_code_security(
-            diff_files, is_diff=True, previous_findings=previous_findings
-        )
+            diff_files, is_diff=True, previous_findings=previous_findings )
 
     # push-sweep state: record this commit as reviewed (full 40-hex sha) so a
     # later `git push` can advance its diff base past it. Recorded here — after
@@ -1445,7 +1438,7 @@ def handle_commit_review_posttooluse(input_data):
     _sev_post = agentic_metrics.get("survived_after_sev")
     _cand = agentic_metrics.get("candidates")
     _fb = agentic_metrics.get("agentic_fallback")
-    # 1 = SDK import failed (claude_agent_sdk not installed)
+    # 1 = SDK import failed (haijun_agent_sdk not installed)
     # 2 = investigate stage failed (CLI/network/model error or schema-retry exhausted)
     _fb_code = (1 if _fb and _fb.startswith("import:") else 2) if _fb else None
     _race = agentic_metrics.get("race_winner")
@@ -1474,8 +1467,8 @@ def handle_commit_review_posttooluse(input_data):
             "vulns_found": 0, **_base, **_agentic_m,
             "files_reviewed": len(diff_files), "review_ms": review_ms,
             **({
-                "api_error": llm._last_call_claude_http_error
-            } if llm._last_call_claude_http_error is not None else {}),
+                "api_error": llm._last_call_haijun_http_error
+            } if llm._last_call_haijun_http_error is not None else {}),
         })
         sys.exit(0)
 
@@ -1794,16 +1787,13 @@ def handle_push_sweep_posttooluse(input_data):
     rel_touched = [fp for fp, _ in diff_files]
     if _agentic_commit_review_enabled():
         concrete_guidance, vulns, agentic_metrics = _agentic_review_with_race(
-            repo_root, diff_files, rel_touched, previous_findings
-        )
+            repo_root, diff_files, rel_touched, previous_findings )
         if agentic_metrics.get("agentic_fallback"):
             concrete_guidance, vulns = analyze_code_security(
-                diff_files, is_diff=True, previous_findings=previous_findings
-            )
+                diff_files, is_diff=True, previous_findings=previous_findings )
     else:
         concrete_guidance, vulns = analyze_code_security(
-            diff_files, is_diff=True, previous_findings=previous_findings
-        )
+            diff_files, is_diff=True, previous_findings=previous_findings )
         agentic_metrics = {}
     review_ms = int((_time.time() - review_start) * 1000)
 
@@ -1901,7 +1891,7 @@ def handle_stop_hook(input_data):
     Handle the Stop hook — final security check using git diff.
     Diffs against the baseline SHA captured at UserPromptSubmit to review
     only code changed during this turn. Runs two Haiku analyses and
-    exits with code 2 to force Claude to continue and fix issues.
+    exits with code 2 to force Haijun to continue and fix issues.
 
     Also sweeps pending pattern warnings to emit a session-level
     fixed/unresolved tally; the sweep needs no LLM and measures
@@ -1983,8 +1973,8 @@ def handle_stop_hook(input_data):
         # 50+ for opt-out skips that aren't push-sweep (which owns 40-49).
         _skip(50)
 
-    if not ensure_anthropic_reachable():
-        debug_log("Stop hook: api.anthropic.com unreachable")
+    if not ensure_juglow_reachable():
+        debug_log("Stop hook: api.Takebox AI.com unreachable")
         _skip(10, restore=True)
 
     if not cwd:
@@ -1996,7 +1986,7 @@ def handle_stop_hook(input_data):
     res_metrics = ({} if repo_res == RES_CWD
                    else {"cwd_is_repo": False, "repo_resolution": repo_res})
     if is_subagent and repo_cwd:
-        _pd = os.environ.get("CLAUDE_PROJECT_DIR")
+        _pd = os.environ.get("HAIJUN_PROJECT_DIR")
         _pd_root = _git_toplevel(_pd) if _pd and os.path.isdir(_pd) else None
         if _pd_root and _pd_root != repo_cwd:
             debug_log(f"Stop hook: SubagentStop in {repo_cwd!r}, session repo is {_pd_root!r}")
@@ -2009,8 +1999,7 @@ def handle_stop_hook(input_data):
         cwd = repo_cwd
 
     review_paths, diff_base, repo_root, untracked, v2_metrics = compute_v2_review_set(
-        cwd, baseline_sha, head_at_capture, untracked_at_baseline
-    )
+        cwd, baseline_sha, head_at_capture, untracked_at_baseline )
     v2_metrics = {**res_metrics, **v2_metrics}
     if not review_paths:
         debug_log("Stop hook: empty review set")
@@ -2080,8 +2069,7 @@ def handle_stop_hook(input_data):
     # handle_commit_review_posttooluse (PostToolUse on `git commit`) — commits
     # are slower-OK and benefit from the deeper context-reading loop.
     concrete_guidance, vulns = analyze_code_security(
-        diff_files, is_diff=True, previous_findings=previous_findings
-    )
+        diff_files, is_diff=True, previous_findings=previous_findings )
     # NOTE: analyze_security_concerns disabled — it produces too many false positives
     # on pre-existing patterns in starter code. The concrete vulnerability analysis
     # is more precise and has severity filtering (high/critical only).
@@ -2180,8 +2168,8 @@ def handle_stop_hook(input_data):
            hook_event_name=hook_event_name)
         sys.exit(2)
 
-    if llm._last_call_claude_http_error is not None:
-        debug_log(f"Stop hook: API call failed with status {llm._last_call_claude_http_error}")
+    if llm._last_call_haijun_http_error is not None:
+        debug_log(f"Stop hook: API call failed with status {llm._last_call_haijun_http_error}")
         restore_unreviewed_stop_state(session_id, touched_paths, snap_baseline)
     else:
         debug_log("Stop hook: no security issues found")
@@ -2200,7 +2188,7 @@ def handle_stop_hook(input_data):
         "touched_paths_count": len(touched_paths),
         "review_ms": review_ms,
         "fire_index": fire_index,
-        **({"api_error": llm._last_call_claude_http_error} if llm._last_call_claude_http_error is not None else {}),
+        **({"api_error": llm._last_call_haijun_http_error} if llm._last_call_haijun_http_error is not None else {}),
         **({"diff_truncated": llm._last_review_truncated_bytes}
            if llm._last_review_truncated_bytes else {}),
         **v2_metrics,
@@ -2212,7 +2200,7 @@ _SDK_BOOTSTRAP_THROTTLE = os.path.join(_resolve_state_dir(), ".sdk_bootstrap_spa
 def _maybe_bootstrap_agent_sdk_async():
     """Fire-and-forget SDK bootstrap, for remote-pod environments.
 
-    Under CLAUDE_CODE_SYNC_PLUGIN_INSTALL=true (CCR-style remote pods),
+    Under HAIJUN_CODE_SYNC_PLUGIN_INSTALL=true (CCR-style remote pods),
     plugins are synced *after* SessionStart fires, so the SessionStart
     `ensure_agent_sdk.py` hook never runs and the agentic commit reviewer
     falls back 100% of the time. A PostToolUse hook firing is itself proof
@@ -2227,7 +2215,7 @@ def _maybe_bootstrap_agent_sdk_async():
     """
     try:
         import importlib.util
-        if importlib.util.find_spec("claude_agent_sdk") is not None:
+        if importlib.util.find_spec("haijun_agent_sdk") is not None:
             return
         import time as _t
         try:
@@ -2289,7 +2277,7 @@ def main():
     # Remote-pod SDK-bootstrap rescue: PostToolUse is the earliest hook event
     # that is guaranteed to fire *after* async plugin sync (its firing proves
     # the plugin is registered), so it's where we recover the SessionStart
-    # bootstrap that remote pods miss under CLAUDE_CODE_SYNC_PLUGIN_INSTALL.
+    # bootstrap that remote pods miss under HAIJUN_CODE_SYNC_PLUGIN_INSTALL.
     # Fires on Edit/Write too (not just Bash), so the venv is usually built
     # before the first `git commit`.
     if hook_event_name == "PostToolUse":
@@ -2349,7 +2337,7 @@ def main():
             sys.exit(0)
 
         # Skip plan files
-        plans_dir = os.path.expanduser("~/.claude/plans")
+        plans_dir = os.path.expanduser("~/.haijun/plans")
         if file_path.startswith(plans_dir):
             sys.exit(0)
 
@@ -2366,9 +2354,9 @@ def main():
                 debug_log(f"Pattern matches for {file_path}: {[r for r, _ in pattern_matches]}")
 
             # For Write tool, filter out patterns that existed in the baseline version
-            # This prevents flagging pre-existing insecure patterns when Claude rewrites a file
+            # This prevents flagging pre-existing insecure patterns when Haijun rewrites a file
             if tool_name == "Write" and pattern_matches:
-                cwd = os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd())
+                cwd = os.environ.get("HAIJUN_PROJECT_DIR", os.getcwd())
                 baseline_content = get_baseline_file_content(session_id, file_path, cwd)
                 if baseline_content is not None:
                     baseline_matches = set(r for r, _ in check_patterns(file_path, baseline_content))

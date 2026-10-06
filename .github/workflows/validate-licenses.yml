@@ -21,10 +21,10 @@ jobs:
       - name: Check every plugin has an Apache 2.0 LICENSE file
         run: |
           set -euo pipefail
-          # Plugins that intentionally ship a non-Apache LICENSE. claude-security
+          # Plugins that intentionally ship a non-Apache LICENSE. haijun-security
           # is deliberately proprietary (see #4427 — replacement rejected); it is
           # exempt from the Apache 2.0 content check but must still ship a LICENSE.
-          exempt=("plugins/claude-security")
+          exempt=("plugins/haijun-security")
           missing=()
           wrong_content=()
           for plugin_dir in plugins/*/; do

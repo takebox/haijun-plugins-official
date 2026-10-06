@@ -1,0 +1,44 @@
+{
+  "description": "Shows the Haijun Security banner when the /haijun-security menu opens and reports usage counts after the plugin's helper scripts run.",
+  "hooks": {
+    "UserPromptExpansion": [
+      {
+        "matcher": "^haijun-security:haijun-security$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${HAIJUN_PLUGIN_ROOT}/hooks/hooks.sh\" banner"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${HAIJUN_PLUGIN_ROOT}/hooks/hooks.sh\" metrics",
+            "if": "Bash(python3 *haijun-security*scripts/*.py *)",
+            "asyncRewake": true,
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${HAIJUN_PLUGIN_ROOT}/hooks/hooks.sh\" metrics",
+            "if": "Bash(python3 *haijun-security*scripts/*.py *)",
+            "asyncRewake": true,
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

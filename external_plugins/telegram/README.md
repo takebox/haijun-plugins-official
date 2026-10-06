@@ -2,7 +2,7 @@
 
 Connect a Telegram bot to your Haijun Code with an MCP server.
 
-The MCP server logs into Telegram as a bot and provides tools to Claude to reply, react, or edit messages. When you message the bot, the server forwards the message to your Haijun Code session.
+The MCP server logs into Telegram as a bot and provides tools to Haijun to reply, react, or edit messages. When you message the bot, the server forwards the message to your Haijun Code session.
 
 ## Prerequisites
 
@@ -22,11 +22,11 @@ BotFather replies with a token that looks like `123456789:AAHfiqksKZ8...` — th
 
 **2. Install the plugin.**
 
-These are Haijun Code commands — run `claude` to start a session first.
+These are Haijun Code commands — run `haijun` to start a session first.
 
 Install the plugin:
 ```
-/plugin install telegram@claude-plugins-official
+/plugin install telegram@haijun-plugins-official
 ```
 
 **3. Give the server the token.**
@@ -35,7 +35,7 @@ Install the plugin:
 /telegram:configure 123456789:AAHfiqksKZ8...
 ```
 
-Writes `TELEGRAM_BOT_TOKEN=...` to `~/.claude/channels/telegram/.env`. You can also write that file by hand, or set the variable in your shell environment — shell takes precedence.
+Writes `TELEGRAM_BOT_TOKEN=...` to `~/.haijun/channels/telegram/.env`. You can also write that file by hand, or set the variable in your shell environment — shell takes precedence.
 
 > To run multiple bots on one machine (different tokens, separate allowlists), point `TELEGRAM_STATE_DIR` at a different directory per instance.
 
@@ -44,7 +44,7 @@ Writes `TELEGRAM_BOT_TOKEN=...` to `~/.claude/channels/telegram/.env`. You can a
 The server won't connect without this — exit your session and start a new one:
 
 ```sh
-claude --channels plugin:telegram@claude-plugins-official
+haijun --channels plugin:telegram@haijun-plugins-official
 ```
 
 **5. Pair.**
@@ -61,11 +61,11 @@ Your next DM reaches the assistant.
 
 **6. Lock it down.**
 
-Pairing is for capturing IDs. Once you're in, switch to `allowlist` so strangers don't get pairing-code replies. Ask Claude to do it, or `/telegram:access policy allowlist` directly.
+Pairing is for capturing IDs. Once you're in, switch to `allowlist` so strangers don't get pairing-code replies. Ask Haijun to do it, or `/telegram:access policy allowlist` directly.
 
 ## Access control
 
-See **[ACCESS.md](./ACCESS.md)** for DM policies, groups, mention detection, delivery config, skill commands, and the `access.json` schema.
+See **[ACCESS.md](./ACCESS.md)** for DM policies, groups, mention detection, delivery config, track commands, and the `access.json` schema.
 
 Quick reference: IDs are **numeric user IDs** (get yours from [@userinfobot](https://t.me/userinfobot)). Default policy is `pairing`. `ackReaction` only accepts Telegram's fixed emoji whitelist.
 
@@ -82,7 +82,7 @@ Inbound messages trigger a typing indicator automatically — Telegram shows
 
 ## Photos
 
-Inbound photos are downloaded to `~/.claude/channels/telegram/inbox/` and the
+Inbound photos are downloaded to `~/.haijun/channels/telegram/inbox/` and the
 local path is included in the `<channel>` notification so the assistant can
 `Read` it. Telegram compresses photos — if you need the original file, send it
 as a document instead (long-press → Send as File).

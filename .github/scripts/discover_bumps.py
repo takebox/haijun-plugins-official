@@ -2,8 +2,8 @@
 """Discover plugins in marketplace.json whose upstream repo has moved past
 their pinned SHA, update the file in place, and emit a summary.
 
-Adapted from claude-plugins-community-internal's discover_bumps.py for the
-single-file marketplace.json format used by claude-plugins-official.
+Adapted from haijun-plugins-community-internal's discover_bumps.py for the
+single-file marketplace.json format used by haijun-plugins-official.
 
 Usage: discover_bumps.py [--plugin NAME] [--max N] [--dry-run]
 """
@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 
-MARKETPLACE_PATH = ".claude-plugin/marketplace.json"
+MARKETPLACE_PATH = ".haijun-plugin/marketplace.json"
 
 
 def gh_api(path: str) -> Any:
@@ -29,8 +29,7 @@ def gh_api(path: str) -> Any:
     there — treating them the same lets callers handle dead refs uniformly.
     """
     r = subprocess.run(
-        ["gh", "api", path], capture_output=True, text=True
-    )
+        ["gh", "api", path], capture_output=True, text=True )
     if r.returncode != 0:
         combined = r.stdout + r.stderr
         if any(s in combined for s in ("404", "Not Found", "No commit found")):

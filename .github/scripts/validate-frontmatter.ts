@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Validates YAML frontmatter in agent, skill, and command .md files.
+ * Validates YAML frontmatter in agent, track, and command .md files.
  *
  * Usage:
  *   bun validate-frontmatter.ts                    # scan current directory
@@ -95,7 +95,7 @@ function parseFrontmatter(markdown: string): ParseResult {
 
 // --- Validation ---
 
-type FileType = "agent" | "skill" | "command";
+type FileType = "agent" | "track" | "command";
 
 interface ValidationIssue {
   level: "error" | "warning";
@@ -160,12 +160,12 @@ function validateCommand(
 
 function detectFileType(filePath: string): FileType | null {
   // Only match agents/ and commands/ at the plugin root level, not nested
-  // inside skill content (e.g. plugins/foo/skills/bar/agents/ is skill content,
+  // inside track content (e.g. plugins/foo/tracks/bar/agents/ is track content,
   // not an agent definition).
-  const inSkillContent = /\/skills\/[^/]+\//.test(filePath);
+  const inSkillContent = /\/tracks\/[^/]+\//.test(filePath);
   if (filePath.includes("/agents/") && !inSkillContent) return "agent";
-  if (filePath.includes("/skills/") && basename(filePath) === "SKILL.md")
-    return "skill";
+  if (filePath.includes("/tracks/") && basename(filePath) === "TRACK.md")
+    return "track";
   if (filePath.includes("/commands/") && !inSkillContent) return "command";
   return null;
 }
@@ -173,8 +173,7 @@ function detectFileType(filePath: string): FileType | null {
 // --- File discovery ---
 
 async function findMdFiles(
-  baseDir: string
-): Promise<{ path: string; type: FileType }[]> {
+  baseDir: string ): Promise<{ path: string; type: FileType }[]> {
   const results: { path: string; type: FileType }[] = [];
 
   async function walk(dir: string) {
@@ -240,7 +239,7 @@ async function main() {
         case "agent":
           issues.push(...validateAgent(result.frontmatter));
           break;
-        case "skill":
+        case "track":
           issues.push(...validateSkill(result.frontmatter));
           break;
         case "command":

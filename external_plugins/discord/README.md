@@ -2,7 +2,7 @@
 
 Connect a Discord bot to your Haijun Code with an MCP server.
 
-When the bot receives a message, the MCP server forwards it to Claude and provides tools to reply, react, and edit messages.
+When the bot receives a message, the MCP server forwards it to Haijun and provides tools to reply, react, and edit messages.
 
 ## Prerequisites
 
@@ -42,11 +42,11 @@ Integration type: **Guild Install**. Copy the **Generated URL**, open it, and ad
 
 **4. Install the plugin.**
 
-These are Haijun Code commands — run `claude` to start a session first.
+These are Haijun Code commands — run `haijun` to start a session first.
 
 Install the plugin:
 ```
-/plugin install discord@claude-plugins-official
+/plugin install discord@haijun-plugins-official
 ```
 
 **5. Give the server the token.**
@@ -55,7 +55,7 @@ Install the plugin:
 /discord:configure MTIz...
 ```
 
-Writes `DISCORD_BOT_TOKEN=...` to `~/.claude/channels/discord/.env`. You can also write that file by hand, or set the variable in your shell environment — shell takes precedence.
+Writes `DISCORD_BOT_TOKEN=...` to `~/.haijun/channels/discord/.env`. You can also write that file by hand, or set the variable in your shell environment — shell takes precedence.
 
 > To run multiple bots on one machine (different tokens, separate allowlists), point `DISCORD_STATE_DIR` at a different directory per instance.
 
@@ -64,7 +64,7 @@ Writes `DISCORD_BOT_TOKEN=...` to `~/.claude/channels/discord/.env`. You can als
 The server won't connect without this — exit your session and start a new one:
 
 ```sh
-claude --channels plugin:discord@claude-plugins-official
+haijun --channels plugin:discord@haijun-plugins-official
 ```
 
 **7. Pair.**
@@ -79,11 +79,11 @@ Your next DM reaches the assistant.
 
 **8. Lock it down.**
 
-Pairing is for capturing IDs. Once you're in, switch to `allowlist` so strangers don't get pairing-code replies. Ask Claude to do it, or `/discord:access policy allowlist` directly.
+Pairing is for capturing IDs. Once you're in, switch to `allowlist` so strangers don't get pairing-code replies. Ask Haijun to do it, or `/discord:access policy allowlist` directly.
 
 ## Access control
 
-See **[ACCESS.md](./ACCESS.md)** for DM policies, guild channels, mention detection, delivery config, skill commands, and the `access.json` schema.
+See **[ACCESS.md](./ACCESS.md)** for DM policies, guild channels, mention detection, delivery config, track commands, and the `access.json` schema.
 
 Quick reference: IDs are Discord **snowflakes** (numeric — enable Developer Mode, right-click → Copy ID). Default policy is `pairing`. Guild channels are opt-in per channel ID.
 
@@ -95,7 +95,7 @@ Quick reference: IDs are Discord **snowflakes** (numeric — enable Developer Mo
 | `react` | Add an emoji reaction to any message by ID. Unicode emoji work directly; custom emoji need `<:name:id>` form. |
 | `edit_message` | Edit a message the bot previously sent. Useful for "working…" → result progress updates. Only works on the bot's own messages. |
 | `fetch_messages` | Pull recent history from a channel (oldest-first). Capped at 100 per call. Each line includes the message ID so the model can `reply_to` it; messages with attachments are marked `+Natt`. Discord's search API isn't exposed to bots, so this is the only lookback. |
-| `download_attachment` | Download all attachments from a specific message by ID to `~/.claude/channels/discord/inbox/`. Returns file paths + metadata. Use when `fetch_messages` shows a message has attachments. |
+| `download_attachment` | Download all attachments from a specific message by ID to `~/.haijun/channels/discord/inbox/`. Returns file paths + metadata. Use when `fetch_messages` shows a message has attachments. |
 
 Inbound messages trigger a typing indicator automatically — Discord shows
 "botname is typing…" while the assistant works on a response.
@@ -105,7 +105,7 @@ Inbound messages trigger a typing indicator automatically — Discord shows
 Attachments are **not** auto-downloaded. The `<channel>` notification lists
 each attachment's name, type, and size — the assistant calls
 `download_attachment(chat_id, message_id)` when it actually wants the file.
-Downloads land in `~/.claude/channels/discord/inbox/`.
+Downloads land in `~/.haijun/channels/discord/inbox/`.
 
 Same path for attachments on historical messages found via `fetch_messages`
 (messages with attachments are marked `+Natt`).

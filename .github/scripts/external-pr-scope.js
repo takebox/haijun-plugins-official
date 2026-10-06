@@ -16,7 +16,7 @@
 // Security: evaluate() reads base + head marketplace.json as DATA via the API and parses them;
 // it never checks out or executes head code.
 
-const MARKETPLACE = '.claude-plugin/marketplace.json';
+const MARKETPLACE = '.haijun-plugin/marketplace.json';
 
 function normalizeRepo(u) {
   return String(u || '').trim().toLowerCase()

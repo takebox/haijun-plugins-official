@@ -29,7 +29,7 @@ permissions:
   contents: read
 
 env:
-  MARKETPLACE: .claude-plugin/marketplace.json
+  MARKETPLACE: .haijun-plugin/marketplace.json
   BUMP_BRANCH: bump/plugin-shas
   MAX_REVERT_PASSES: '3'
   REVERT_MARKER: '<!-- revert-failed-bumps -->'

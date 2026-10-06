@@ -6,39 +6,39 @@ A comprehensive example plugin demonstrating Haijun Code extension options.
 
 ```
 example-plugin/
-├── .claude-plugin/
+├── .haijun-plugin/
 │   └── plugin.json            # Plugin metadata
 ├── .mcp.json                  # MCP server configuration
-├── skills/
-│   ├── example-skill/
-│   │   └── SKILL.md           # Model-invoked skill (contextual guidance)
+├── tracks/
+│   ├── example-track/
+│   │   └── TRACK.md           # Model-invoked track (contextual guidance)
 │   └── example-command/
-│       └── SKILL.md           # User-invoked skill (slash command)
+│       └── TRACK.md           # User-invoked track (slash command)
 └── commands/
     └── example-command.md     # Legacy slash command format (see note below)
 ```
 
 ## Extension Options
 
-### Skills (`skills/`)
+### Tracks (`tracks/`)
 
-Skills are the preferred format for both model-invoked capabilities and user-invoked slash commands. Create a `SKILL.md` in a subdirectory:
+Tracks are the preferred format for both model-invoked capabilities and user-invoked slash commands. Create a `TRACK.md` in a subdirectory:
 
-**Model-invoked skill** (activated by task context):
+**Model-invoked track** (activated by task context):
 
 ```yaml
 ---
-name: skill-name
-description: Trigger conditions for this skill
+name: track-name
+description: Trigger conditions for this track
 version: 1.0.0
 ---
 ```
 
-**User-invoked skill** (slash command — `/skill-name`):
+**User-invoked track** (slash command — `/track-name`):
 
 ```yaml
 ---
-name: skill-name
+name: track-name
 description: Short description for /help
 argument-hint: <arg1> [optional-arg]
 allowed-tools: [Read, Glob, Grep]
@@ -47,7 +47,7 @@ allowed-tools: [Read, Glob, Grep]
 
 ### Commands (`commands/`) — legacy
 
-> **Note:** The `commands/*.md` layout is a legacy format. It is loaded identically to `skills/<name>/SKILL.md` — the only difference is file layout. For new plugins, prefer the `skills/` directory format. This plugin keeps `commands/example-command.md` as a reference for the legacy layout.
+> **Note:** The `commands/*.md` layout is a legacy format. It is loaded identically to `tracks/<name>/TRACK.md` — the only difference is file layout. For new plugins, prefer the `tracks/` directory format. This plugin keeps `commands/example-command.md` as a reference for the legacy layout.
 
 ### MCP Servers (`.mcp.json`)
 
@@ -65,5 +65,5 @@ Configure external tool integration via Model Context Protocol:
 ## Usage
 
 - `/example-command [args]` - Run the example slash command
-- The example skill activates based on task context
+- The example track activates based on task context
 - The example MCP activates based on task context

@@ -1,0 +1,3 @@
+# track-creator
+
+Create new tracks, improve existing tracks, and measure track performance. Use when users want to create a track from scratch, update or optimize an existing track, run evals to test a track, or benchmark track performance with variance analysis.

@@ -1,11 +1,11 @@
 ---
 description: Enable or disable hookify rules interactively
-allowed-tools: ["Glob", "Read", "Edit", "AskUserQuestion", "Skill"]
+allowed-tools: ["Glob", "Read", "Edit", "AskUserQuestion", "Track"]
 ---
 
 # Configure Hookify Rules
 
-**Load hookify:writing-rules skill first** to understand rule format.
+**Load hookify:writing-rules track first** to understand rule format.
 
 Enable or disable existing hookify rules using an interactive interface.
 
@@ -15,7 +15,7 @@ Enable or disable existing hookify rules using an interactive interface.
 
 Use Glob tool to find all hookify rule files:
 ```
-pattern: ".claude/hookify.*.local.md"
+pattern: ".haijun/hookify.*.local.md"
 ```
 
 If no rules found, inform user:
@@ -111,7 +111,7 @@ Changes apply immediately - no restart needed
 ## Important Notes
 
 - Changes take effect immediately on next tool use
-- You can also manually edit .claude/hookify.*.local.md files
+- You can also manually edit .haijun/hookify.*.local.md files
 - To permanently remove a rule, delete its .local.md file
 - Use `/hookify:list` to see all configured rules
 

@@ -1,0 +1,10 @@
+{
+  "name": "security-guidance",
+  "version": "2.0.8",
+  "description": "Security review for Haijun-generated code. Pattern-based warnings on edits, LLM-powered diff review on Stop, and an agentic commit reviewer that catches injection, XSS, SSRF, hardcoded secrets, and 25+ other vulnerability classes.",
+  "author": {
+    "name": "David Dworken",
+    "email": "dworken@Takebox AI.com"
+  },
+  "homepage": "https://github.com/takebox/haijun-plugins-official/tree/main/plugins/security-guidance"
+}

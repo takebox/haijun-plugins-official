@@ -124,16 +124,16 @@ def hook_env(tmp_path, stub_api):
     state = tmp_path / "state"
     state.mkdir()
     env = {k: v for k, v in os.environ.items()
-           if k not in ("ANTHROPIC_AUTH_TOKEN", "CLAUDE_CODE_REMOTE",
-                        "CLAUDE_PROJECT_DIR", "HTTP_PROXY", "HTTPS_PROXY",
+           if k not in ("JUGLOW_AUTH_TOKEN", "HAIJUN_CODE_REMOTE",
+                        "HAIJUN_PROJECT_DIR", "HTTP_PROXY", "HTTPS_PROXY",
                         "http_proxy", "https_proxy", "ALL_PROXY", "all_proxy",
-                        "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX",
-                        "CLAUDE_CODE_USE_FOUNDRY")}
+                        "HAIJUN_CODE_USE_BEDROCK", "HAIJUN_CODE_USE_VERTEX",
+                        "HAIJUN_CODE_USE_FOUNDRY")}
     env.update(GIT_ENV)
     env.update({
         "SECURITY_WARNINGS_STATE_DIR": str(state),
-        "ANTHROPIC_API_KEY": "test-key",
-        "ANTHROPIC_BASE_URL": f"http://127.0.0.1:{stub_api.server_port}",
+        "JUGLOW_API_KEY": "test-key",
+        "JUGLOW_BASE_URL": f"http://127.0.0.1:{stub_api.server_port}",
         "NO_PROXY": "*", "no_proxy": "*",
         "SG_AGENTIC_COMMIT_REVIEW": "0",
         "SECURITY_GUIDANCE_COMMIT_REVIEW": "on",

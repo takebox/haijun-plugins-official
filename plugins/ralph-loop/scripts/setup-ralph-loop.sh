@@ -51,13 +51,12 @@ STOPPING:
 
 MONITORING:
   # View current iteration:
-  grep '^iteration:' .claude/ralph-loop.local.md
+  grep '^iteration:' .haijun/ralph-loop.local.md
 
   # View full state:
-  head -10 .claude/ralph-loop.local.md
+  head -10 .haijun/ralph-loop.local.md
 HELP_EOF
-      exit 0
-      ;;
+      exit 0 ;;
     --max-iterations)
       if [[ -z "${2:-}" ]]; then
         echo "❌ Error: --max-iterations requires a number argument" >&2
@@ -82,8 +81,7 @@ HELP_EOF
         exit 1
       fi
       MAX_ITERATIONS="$2"
-      shift 2
-      ;;
+      shift 2 ;;
     --completion-promise)
       if [[ -z "${2:-}" ]]; then
         echo "❌ Error: --completion-promise requires a text argument" >&2
@@ -99,13 +97,11 @@ HELP_EOF
         exit 1
       fi
       COMPLETION_PROMISE="$2"
-      shift 2
-      ;;
+      shift 2 ;;
     *)
       # Non-option argument - collect all as prompt parts
       PROMPT_PARTS+=("$1")
-      shift
-      ;;
+      shift ;;
   esac
 done
 
@@ -128,7 +124,7 @@ if [[ -z "$PROMPT" ]]; then
 fi
 
 # Create state file for stop hook (markdown with YAML frontmatter)
-mkdir -p .claude
+mkdir -p .haijun
 
 # Quote completion promise for YAML if it contains special chars or is not null
 if [[ -n "$COMPLETION_PROMISE" ]] && [[ "$COMPLETION_PROMISE" != "null" ]]; then
@@ -137,11 +133,11 @@ else
   COMPLETION_PROMISE_YAML="null"
 fi
 
-cat > .claude/ralph-loop.local.md <<EOF
+cat > .haijun/ralph-loop.local.md <<EOF
 ---
 active: true
 iteration: 1
-session_id: ${CLAUDE_CODE_SESSION_ID:-}
+session_id: ${HAIJUN_CODE_SESSION_ID:-}
 max_iterations: $MAX_ITERATIONS
 completion_promise: $COMPLETION_PROMISE_YAML
 started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -162,7 +158,7 @@ The stop hook is now active. When you try to exit, the SAME PROMPT will be
 fed back to you. You'll see your previous work in files, creating a
 self-referential loop where you iteratively improve on the same task.
 
-To monitor: head -10 .claude/ralph-loop.local.md
+To monitor: head -10 .haijun/ralph-loop.local.md
 
 ⚠️  WARNING: This loop cannot be stopped manually! It will run infinitely
     unless you set --max-iterations or --completion-promise.

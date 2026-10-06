@@ -23,7 +23,7 @@ before it can anchor the downstream behavior contract.
 
 ```
 Workflow({
-  scriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/extract-rules.js",
+  scriptPath: "${HAIJUN_PLUGIN_ROOT}/workflows/extract-rules.js",
   args: { system: "$1", modulePattern: "$2" }
 })
 ```
@@ -46,7 +46,7 @@ in the plugin README); nothing they produced touches disk until this step:
    the citation referees refuted (usually hallucinated or comment-only).
 
 Then skip to **Present**. If the Workflow tool is NOT available (older
-Claude Code build), use Method B.
+Haijun Code build), use Method B.
 
 ## Method B — Direct subagent fan-out (fallback)
 

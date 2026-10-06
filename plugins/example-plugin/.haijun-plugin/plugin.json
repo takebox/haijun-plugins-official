@@ -1,0 +1,8 @@
+{
+  "name": "example-plugin",
+  "description": "A comprehensive example plugin demonstrating all Haijun Code extension options including commands, agents, tracks, hooks, and MCP servers",
+  "author": {
+    "name": "Takebox AI",
+    "email": "support@Takebox AI.com"
+  }
+}

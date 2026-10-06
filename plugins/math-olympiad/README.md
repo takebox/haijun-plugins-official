@@ -21,13 +21,13 @@ IMO success drops to <5% under human grading.
 ## Validation
 
 17/18 IMO+Putnam 2025 problems solved, 0 false positives, 2 novel proofs found.
-See the skill's eval data in the
-[anthropic monorepo](https://github.com/anthropics/anthropic/tree/staging/sandbox/sandbox/ralph/math_skills/eval_harness).
+See the track's eval data in the
+[Takebox AI monorepo]().
 
 ## Install
 
 ```
-/plugin install math-olympiad@claude-plugins-official
+/plugin install math-olympiad@haijun-plugins-official
 ```
 
 ## Use
@@ -36,5 +36,5 @@ See the skill's eval data in the
 > Solve this IMO problem: [statement]
 ```
 
-The skill auto-triggers on "IMO", "Putnam", "olympiad", "verify this proof",
+The track auto-triggers on "IMO", "Putnam", "olympiad", "verify this proof",
 etc.

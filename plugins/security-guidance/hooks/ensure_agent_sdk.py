@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""SessionStart bootstrap: ensure claude_agent_sdk is importable for the
+"""SessionStart bootstrap: ensure haijun_agent_sdk is importable for the
 agentic commit reviewer.
 
-If claude_agent_sdk already imports in the current python3, this is a no-op.
-Otherwise it creates a venv at ~/.claude/security/agent-sdk-venv and installs
+If haijun_agent_sdk already imports in the current python3, this is a no-op.
+Otherwise it creates a venv at ~/.haijun/security/agent-sdk-venv and installs
 the SDK there. security_reminder_hook.py prepends that venv's site-packages to
 sys.path before attempting the SDK import, so the venv is used as a
 fallback only when the system install is missing.
 
-The venv lives under ~/.claude/security/ (same dir the plugin already uses
+The venv lives under ~/.haijun/security/ (same dir the plugin already uses
 for per-session state) so it persists across plugin updates — rebuilding
 on every update is 30-60s of wasted work for a package that changes far
 less often than the plugin does.
@@ -23,14 +23,14 @@ import sys
 import time
 from pathlib import Path
 
-# Shared state-dir resolver: SECURITY_WARNINGS_STATE_DIR → CLAUDE_CONFIG_DIR/security
-# → ~/.claude/security. See _base.state_dir for resolution precedence. Re-aliased
+# Shared state-dir resolver: SECURITY_WARNINGS_STATE_DIR → HAIJUN_CONFIG_DIR/security
+# → ~/.haijun/security. See _base.state_dir for resolution precedence. Re-aliased
 # here to match the existing local name (state_dir was already a local var in
 # main() and _maybe_emit_user_notice).
 from _base import state_dir as _resolve_state_dir
 
 # Outcome codes for the sdk_bootstrap metric. Values are stable for telemetry.
-NOOP_SYSTEM = 0      # claude_agent_sdk already importable in system python
+NOOP_SYSTEM = 0      # haijun_agent_sdk already importable in system python
 NOOP_VENV = 1        # venv already built and SDK imports from it
 BUILT = 2            # venv created + SDK pip-installed this run
 BUILD_FAILED = 3     # venv create or pip install raised/timed out
@@ -397,17 +397,17 @@ def _target_dir(state_dir) -> Path:
 
 
 def _target_sdk_importable(state_dir) -> bool:
-    """True iff the --target libs dir has an importable claude_agent_sdk,
+    """True iff the --target libs dir has an importable haijun_agent_sdk,
     probed with THIS interpreter (the one llm.py will import it from) and the
     target dir prepended to sys.path. Cheap dir-check first to avoid a
     subprocess on the common no-target path."""
     target = _target_dir(state_dir)
-    if not (target / "claude_agent_sdk").is_dir():
+    if not (target / "haijun_agent_sdk").is_dir():
         return False
     try:
         r = subprocess.run(
             [sys.executable, "-c",
-             "import sys; sys.path.insert(0, sys.argv[1]); import claude_agent_sdk",
+             "import sys; sys.path.insert(0, sys.argv[1]); import haijun_agent_sdk",
              str(target)],
             capture_output=True, timeout=10,
         )
@@ -433,7 +433,7 @@ def _build_via_target(state_dir) -> tuple[int, str, str]:
             [sys.executable, "-m", "pip", "install",
              "--target", str(target), "--upgrade",
              "--disable-pip-version-check", "--prefer-binary", "--no-cache-dir",
-             "claude-agent-sdk"],
+             "haijun-agent-sdk"],
             capture_output=True, timeout=120, check=True,
         )
         return BUILT_TARGET, "", ""
@@ -458,7 +458,7 @@ def _sdk_on_syspath() -> bool:
     # transitive deps and costs ~800ms — too heavy for a
     # per-SessionStart no-op check that most sessions hit.
     try:
-        return importlib.util.find_spec("claude_agent_sdk") is not None
+        return importlib.util.find_spec("haijun_agent_sdk") is not None
     except Exception:
         return False
 
@@ -467,7 +467,7 @@ def _plugin_version_int() -> int:
     # Same encoding as security_reminder_hook._read_plugin_version_int so
     # metrics rows from both hooks join on pv.
     try:
-        p = Path(__file__).parent.parent / ".claude-plugin" / "plugin.json"
+        p = Path(__file__).parent.parent / ".haijun-plugin" / "plugin.json"
         v = json.loads(p.read_text())["version"]
         major, minor, patch = (int(x) for x in v.split(".")[:3])
         return major * 10000 + minor * 100 + patch
@@ -533,7 +533,7 @@ def main() -> tuple[int, str, str]:
     if venv_py.exists():
         try:
             r = subprocess.run(
-                [str(venv_py), "-c", "import claude_agent_sdk"],
+                [str(venv_py), "-c", "import haijun_agent_sdk"],
                 capture_output=True, timeout=10,
             )
             if r.returncode == 0:
@@ -593,7 +593,7 @@ def main() -> tuple[int, str, str]:
         subprocess.run(
             [str(venv_py), "-m", "pip", "install", "--quiet",
              "--disable-pip-version-check", "--prefer-binary", "--no-cache-dir",
-             "claude-agent-sdk"],
+             "haijun-agent-sdk"],
             capture_output=True, timeout=120, check=True,
         )
         return BUILT, "", ""
@@ -624,19 +624,16 @@ def main() -> tuple[int, str, str]:
         if err_phase == "venv" and (
             "ensurepip is not available" in s
             or ("ensurepip" in s and "returned non-zero" in s)
-            or "the virtual environment was not created" in s and "ensurepip" in s
-        ):
+            or "the virtual environment was not created" in s and "ensurepip" in s ):
             err_kind = "venv_ensurepip_fail"
         elif err_phase == "venv" and (
             "[errno 36]" in s
             or "file name too long" in s
-            or "path too long" in s
-        ):
+            or "path too long" in s ):
             err_kind = "venv_path_too_long"
         elif err_phase == "venv" and (
             "no module named venv" in s
-            or "no module named 'venv'" in s
-        ):
+            or "no module named 'venv'" in s ):
             err_kind = "venv_no_module"
         elif err_phase == "venv" and (
             "[errno 17]" in s
@@ -664,8 +661,7 @@ def main() -> tuple[int, str, str]:
             err_kind = "stderr_timeout"
         elif err_phase == "venv" and (
             "virtual environment was not created" in s
-            or "error: command" in s and "venv" in s
-        ):
+            or "error: command" in s and "venv" in s ):
             # Generic venv-setup catch-all — matched AFTER the more specific
             # venv patterns above so we don't shadow them, but BEFORE the
             # other: fallback so generic venv setup failures get their own
@@ -753,9 +749,9 @@ def _maybe_emit_user_notice(outcome: int, pv: int) -> str | None:
         f"{sys.version_info[0]}.{sys.version_info[1]}.\n\n"
         f"Pattern checks and the single-shot LLM diff review are still "
         f"active. To enable the deeper reviewer, install Python 3.10+ "
-        f"(e.g. `brew install python` on macOS) and restart Claude Code.\n\n"
+        f"(e.g. `brew install python` on macOS) and restart Haijun Code.\n\n"
         f"This notice is shown once per plugin version. "
-        f"See: github.com/anthropics/claude-plugins-official/issues/2071"
+        f"See: github.com/takebox/haijun-plugins-official/issues/2071"
     )
 
 

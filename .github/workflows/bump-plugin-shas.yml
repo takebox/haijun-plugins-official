@@ -1,7 +1,7 @@
 name: Bump Plugin SHAs
 
 # Nightly sweep: for each external entry whose upstream HEAD has moved past
-# its pinned SHA, validate at the new SHA with `claude plugin validate`
+# its pinned SHA, validate at the new SHA with `haijun plugin validate`
 # inline, then open one PR per bumped plugin on branch `bump/<slug>`.
 # Failing entries stay isolated in their own PR; passing bumps merge
 # independently.
@@ -61,10 +61,10 @@ jobs:
 
       # createCommitOnBranch-based bump so commits are signed by GitHub and
       # satisfy the org-level required_signatures ruleset on main.
-      - uses: anthropics/claude-plugins-community/.github/actions/bump-plugin-shas@9247660a88cf3f49456a2f6464d66fe4ea4f4a77
+      - uses: takebox/haijun-plugins-community/.github/actions/bump-plugin-shas@9247660a88cf3f49456a2f6464d66fe4ea4f4a77
         id: bump
         with:
-          marketplace-path: .claude-plugin/marketplace.json
+          marketplace-path: .haijun-plugin/marketplace.json
           max-bumps: ${{ inputs.max_bumps || '60' }}
           only: ${{ inputs.plugin }}
           pr-mode: per-entry
@@ -73,7 +73,7 @@ jobs:
           # (no release / not-ahead / lookup failure -> pin held; see the action
           # README). All other entries HEAD-track exactly as before.
           tracking-config: .github/bump-tracking.json
-          claude-cli-version: latest
+          haijun-cli-version: latest
 
       # Per-entry fan-out: dispatch the three required checks against each bump
       # branch. `pr-urls` is a JSON array of {name, old_sha, new_sha, branch,

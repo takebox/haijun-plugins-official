@@ -74,7 +74,7 @@ def record_touched_path(session_id, file_path):
 def consume_stop_state(session_id, clear=True):
     """Atomically snapshot all state the Stop hook needs and clear touched_paths.
 
-    The Stop hook is asyncRewake — it runs in the background after Claude's
+    The Stop hook is asyncRewake — it runs in the background after Haijun's
     turn ends. The user can submit a new prompt before this hook finishes its
     initial state read. Telemetry showed a meaningful share of would-be reviews lost when
     the next turn's UPS wiped touched_paths before Stop read it.
@@ -158,7 +158,7 @@ def get_baseline_file_content(session_id, file_path, cwd):
     the caller tries to use it. Same class as the existing migrations at
     security_reminder_hook.py:540 (reflog subjects) and :1115 (commit
     diffs); this helper was missed in that pass. See
-    anthropics/claude-plugins-official#2056."""
+    takebox/haijun-plugins-official#2056."""
     baseline_sha = load_baseline_sha(session_id)
     if not baseline_sha:
         return None
@@ -171,8 +171,7 @@ def get_baseline_file_content(session_id, file_path, cwd):
             return None
         result = subprocess.run(
             [*GIT_CMD, "show", f"{baseline_sha}:{rel_path}"],
-            cwd=cwd, capture_output=True, timeout=5
-        )
+            cwd=cwd, capture_output=True, timeout=5 )
         if result.returncode == 0:
             return (result.stdout or b"").decode("utf-8", errors="replace")
         return None
@@ -191,7 +190,7 @@ def capture_git_baseline(cwd):
     NOTE: `git stash create` does NOT capture untracked files. UPS pairs this
     SHA with a `_list_untracked()` snapshot stored as `untracked_at_baseline`,
     and `compute_v2_review_set` subtracts that set so pre-existing untracked
-    files are not reviewed as Claude-authored.
+    files are not reviewed as Haijun-authored.
     """
     # stdout is a SHA so text=True is safe on stdout, but a non-ASCII
     # filename in `git stash create`'s STDERR warning (e.g. a worktree
@@ -202,8 +201,7 @@ def capture_git_baseline(cwd):
         # Check if HEAD exists (i.e., repo has at least one commit)
         head_check = subprocess.run(
             [*GIT_CMD, "rev-parse", "HEAD"],
-            cwd=cwd, capture_output=True, timeout=5
-        )
+            cwd=cwd, capture_output=True, timeout=5 )
         if head_check.returncode != 0:
             # No commits yet — skip review rather than creating commits in the user's repo
             debug_log("No commits in repo, skipping baseline capture")
@@ -211,8 +209,7 @@ def capture_git_baseline(cwd):
 
         result = subprocess.run(
             [*GIT_CMD, "stash", "create"],
-            cwd=cwd, capture_output=True, timeout=15
-        )
+            cwd=cwd, capture_output=True, timeout=15 )
         sha = (result.stdout or b"").decode("utf-8", errors="replace").strip()
         if sha:
             return sha
@@ -220,8 +217,7 @@ def capture_git_baseline(cwd):
         # Working tree is clean — stash create returns empty. Use HEAD.
         result = subprocess.run(
             [*GIT_CMD, "rev-parse", "HEAD"],
-            cwd=cwd, capture_output=True, timeout=5
-        )
+            cwd=cwd, capture_output=True, timeout=5 )
         sha = (result.stdout or b"").decode("utf-8", errors="replace").strip()
         return sha if sha else None
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError, ValueError) as e:
@@ -235,7 +231,7 @@ def capture_git_baseline(cwd):
 # hook has already reviewed, so the push-sweep can advance its diff base past
 # the contiguous reviewed prefix and skip entirely when everything pushed was
 # already covered. Lives under `.git/` (same precedent as CC's
-# `.git/claude-trailers`) so it survives across sessions and is per-clone.
+# `.git/haijun-trailers`) so it survives across sessions and is per-clone.
 #
 # Format: one line per reviewed sha, append-only:
 #   <40-hex-sha>\t<unix-ts>\t<pv>\t<vulns_found>
@@ -255,7 +251,7 @@ def capture_git_baseline(cwd):
 # hook has already reviewed, so the push-sweep can advance its diff base past
 # the contiguous reviewed prefix and skip entirely when everything pushed was
 # already covered. Lives under `.git/` (same precedent as CC's
-# `.git/claude-trailers`) so it survives across sessions and is per-clone.
+# `.git/haijun-trailers`) so it survives across sessions and is per-clone.
 #
 # Format: one line per reviewed sha, append-only:
 #   <40-hex-sha>\t<unix-ts>\t<pv>\t<vulns_found>
@@ -359,7 +355,7 @@ def _list_untracked(cwd):
     A non-ASCII filename in the worktree crashed the subprocess reader
     thread, left r.stdout=None, and propagated AttributeError out of the
     helper — silently losing the baseline snapshot every UserPromptSubmit.
-    See anthropics/claude-plugins-official#2056. The sibling helpers in
+    See takebox/haijun-plugins-official#2056. The sibling helpers in
     gitutil.py already follow the lenient pattern; this function and
     capture_git_baseline / _git_name_only / _git_status_porcelain were
     the holdouts."""

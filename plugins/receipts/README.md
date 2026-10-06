@@ -13,7 +13,7 @@ synthetic corpus, not from anyone's real usage.*
 ## Install
 
 ```
-/plugin install receipts@claude-plugins-official
+/plugin install receipts@haijun-plugins-official
 ```
 
 ## Use
@@ -53,7 +53,7 @@ the page. What's left is meant to survive someone pushing back on it.
 
 Everything is read locally — file I/O and read-only `git`, no network calls.
 
-It reads `~/.claude/projects/**/*.jsonl`, your own session history, already on
+It reads `~/.haijun/projects/**/*.jsonl`, your own session history, already on
 disk. To work out which of the directories mentioned there are git repos, it
 runs `git rev-parse` in each of them, and in the ones that are, reads
 `user.email` and runs `git log`.
@@ -64,7 +64,7 @@ content, and no tool or MCP server names — so the list of services you've
 connected never leaves your machine. Your email is used locally to match commit
 authorship and is never sent.
 
-Project names appear verbatim in the report, so the skill reads them back to
+Project names appear verbatim in the report, so the track reads them back to
 you before you send it anywhere. Use `/receipts for <project>` to scope it down.
 
 ## Which plugin do I want?

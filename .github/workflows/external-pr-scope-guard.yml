@@ -4,7 +4,7 @@ name: External PR Scope Guard
 # Members (write/admin) and the repo's own automation bot (bump SHA PRs) are unrestricted and
 # skip this check. For a non-member PR this fails unless the PR is an in-scope external
 # contribution per .github/scripts/external-pr-scope.js: it changes ONLY
-# .claude-plugin/marketplace.json, the delta is additions-only (no existing entry modified or
+# .haijun-plugin/marketplace.json, the delta is additions-only (no existing entry modified or
 # removed), and every ADDED entry's source.url is a repo that ALREADY backs a live plugin in
 # this marketplace (the allowed set is derived from the live marketplace — there is no
 # maintained allowlist).

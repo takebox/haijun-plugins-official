@@ -125,7 +125,7 @@ Only use exec() if you absolutely need shell features and the input is guarantee
     {
         "ruleName": "innerHTML_xss",
         # Browser DOM API: only meaningful in JS/TS source. Closes FPs like
-        # docs/example HTML, playground/self-contained skills that hardcode
+        # docs/example HTML, playground/self-contained tracks that hardcode
         # innerHTML strings with zero user input (#410).
         "path_filter": lambda p: p.endswith(_JS_EXTS),
         "substrings": [".innerHTML =", ".innerHTML="],

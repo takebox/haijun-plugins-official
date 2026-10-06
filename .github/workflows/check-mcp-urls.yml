@@ -17,7 +17,7 @@ name: Check MCP URLs
 on:
   pull_request:
     paths:
-      - '.claude-plugin/marketplace.json'
+      - '.haijun-plugin/marketplace.json'
       - 'plugins/**'
       - 'external_plugins/**'
       - '.github/workflows/check-mcp-urls.yml'
@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          MARKETPLACE=".claude-plugin/marketplace.json"
+          MARKETPLACE=".haijun-plugin/marketplace.json"
 
           # Each line: "<plugin>\t<server>\t<url>". Marketplace entries with a
           # string `source` are local paths; objects describe an external repo
@@ -49,7 +49,7 @@ jobs:
             while IFS=$'\t' read -r plugin src; do
               dir="${src#./}"
               [[ -d "$dir" ]] || continue
-              for cfg in "$dir/.mcp.json" "$dir/mcp.json" "$dir/.claude-plugin/plugin.json"; do
+              for cfg in "$dir/.mcp.json" "$dir/mcp.json" "$dir/.haijun-plugin/plugin.json"; do
                 [[ -f "$cfg" ]] || continue
                 # MCP config comes in two shapes: a bare map of server name ->
                 # config, or wrapped under a top-level "mcpServers" key (also

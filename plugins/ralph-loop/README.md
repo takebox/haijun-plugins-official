@@ -10,7 +10,7 @@ This technique is inspired by the Ralph Wiggum coding technique (named after the
 
 ### Core Concept
 
-This plugin implements Ralph using a **Stop hook** that intercepts Claude's exit attempts:
+This plugin implements Ralph using a **Stop hook** that intercepts Haijun's exit attempts:
 
 ```bash
 # You run ONCE:
@@ -28,9 +28,9 @@ The loop happens **inside your current session** - you don't need external bash 
 
 This creates a **self-referential feedback loop** where:
 - The prompt never changes between iterations
-- Claude's previous work persists in files
+- Haijun's previous work persists in files
 - Each iteration sees modified files and git history
-- Claude autonomously improves by reading its own past work in files
+- Haijun autonomously improves by reading its own past work in files
 
 ## Quick Start
 
@@ -38,7 +38,7 @@ This creates a **self-referential feedback loop** where:
 /ralph-loop "Build a REST API for todos. Requirements: CRUD operations, input validation, tests. Output <promise>COMPLETE</promise> when done." --completion-promise "COMPLETE" --max-iterations 50
 ```
 
-Claude will:
+Haijun will:
 - Implement the API iteratively
 - Run tests and see failures
 - Fix bugs based on test output
@@ -143,7 +143,7 @@ Don't aim for perfect on first try. Let the loop refine the work.
 ### 2. Failures Are Data
 "Deterministically bad" means failures are predictable and informative. Use them to tune prompts.
 
-### 3. Operator Skill Matters
+### 3. Operator Track Matters
 Success depends on writing good prompts, not just having a good model.
 
 ### 4. Persistence Wins
@@ -180,10 +180,10 @@ The stop hook uses a bash script that requires Git for Windows to run properly.
 **Workaround**: Edit the cached plugin's `hooks/hooks.json` to use Git Bash explicitly:
 
 ```json
-"command": "\"C:/Program Files/Git/bin/bash.exe\" ${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh"
+"command": "\"C:/Program Files/Git/bin/bash.exe\" ${HAIJUN_PLUGIN_ROOT}/hooks/stop-hook.sh"
 ```
 
-**Location**: `~/.claude/plugins/cache/claude-plugins-official/ralph-wiggum/<hash>/hooks/hooks.json`
+**Location**: `~/.haijun/plugins/cache/haijun-plugins-official/ralph-wiggum/<hash>/hooks/hooks.json`
 
 **Note**: Use `Git/bin/bash.exe` (the wrapper with proper PATH), not `Git/usr/bin/bash.exe` (raw MinGW bash without utilities in PATH).
 

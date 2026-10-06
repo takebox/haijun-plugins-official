@@ -111,7 +111,7 @@ Provide your analysis in this structure:
 Always consider:
 - The complexity cost of your suggestions
 - Whether the improvement justifies potential breaking changes
-- The skill level and conventions of the existing codebase
+- The track level and conventions of the existing codebase
 - Performance implications of additional validation
 - The balance between safety and usability
 

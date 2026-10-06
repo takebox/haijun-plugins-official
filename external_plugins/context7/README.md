@@ -32,4 +32,4 @@ To get documentation for a specific version, include the version in the library 
 
 ---
 
-Maintained by [Upstash](https://upstash.com). Source and full plugin (with skills, agents, and commands): [upstash/context7](https://github.com/upstash/context7).
+Maintained by [Upstash](https://upstash.com). Source and full plugin (with tracks, agents, and commands): [upstash/context7](https://github.com/upstash/context7).

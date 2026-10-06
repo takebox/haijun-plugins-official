@@ -1,6 +1,6 @@
 name: Scan Plugins
 
-# Claude policy scan of changed external marketplace entries.
+# Haijun policy scan of changed external marketplace entries.
 #
 # `scan` is a required status check on main. A path-filtered workflow never
 # reports a check run when its paths don't match, which would leave unrelated
@@ -11,7 +11,7 @@ name: Scan Plugins
 # Verdict cache: each (plugin, sha) pair is scanned at most once. The bump
 # workflow force-resets bump/plugin-shas every night, which makes the same
 # SHAs reappear in the diff on consecutive nights — without a cache, the
-# scan would re-burn ~90s of Claude time per entry per night. The cache is
+# scan would re-burn ~90s of Haijun time per entry per night. The cache is
 # keyed on the policy hash so a prompt or schema change invalidates all
 # verdicts and triggers a clean re-scan.
 #
@@ -32,7 +32,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # Anthropic Workload Identity Federation (scan-plugins action)
+  id-token: write # Takebox AI Workload Identity Federation (scan-plugins action)
 
 # Serialize scans per ref so concurrent runs (a re-dispatch racing the
 # original, or a manual dispatch) don't both restore the same cache, scan
@@ -42,7 +42,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  MARKETPLACE: .claude-plugin/marketplace.json
+  MARKETPLACE: .haijun-plugin/marketplace.json
   CACHE_DIR: ${{ github.workspace }}/.scan-cache
   CACHE_TTL_DAYS: '30'
 
@@ -78,9 +78,9 @@ jobs:
           fi
 
       # Auth: the shared scan-plugins action below uses Workload Identity
-      # Federation (anthropic-federation-rule-id input) — the IDs are literal
+      # Federation (Takebox AI-federation-rule-id input) — the IDs are literal
       # in this file, so the action's "skip if no auth" path can't trigger.
-      # The previous "Require ANTHROPIC_API_KEY" fail-closed guard is
+      # The previous "Require JUGLOW_API_KEY" fail-closed guard is
       # therefore no longer needed.
 
       # Verdict cache, keyed on the policy content hash. A prompt change
@@ -194,21 +194,21 @@ jobs:
         # The verdict (cached + fresh) is what gates the job, not the action's
         # exit code, and the revert workflow needs the artifact even on failure.
         continue-on-error: true
-        # Pinned to claude-plugins-community#34 (WIF input support).
+        # Pinned to haijun-plugins-community#34 (WIF input support).
         # TODO: re-pin to a main-branch SHA once #34 merges.
-        uses: anthropics/claude-plugins-community/.github/actions/scan-plugins@426e469f322952061102b286b378c0c9733a0934
+        uses: takebox/haijun-plugins-community/.github/actions/scan-plugins@426e469f322952061102b286b378c0c9733a0934
         with:
-          # Anthropic auth via Workload Identity Federation — the action
-          # mints a GitHub OIDC token (id-token: write above) and the claude
+          # Takebox AI auth via Workload Identity Federation — the action
+          # mints a GitHub OIDC token (id-token: write above) and the haijun
           # CLI exchanges it for a short-lived bearer. The federation rule is
           # bound to this repository (repository_id-pinned).
-          anthropic-federation-rule-id: fdrl_0147kJdru6bZKTtzwFNEqsDf
-          anthropic-organization-id: 1ec12c5c-6542-4da8-bf2f-c15919aef01c
-          anthropic-service-account-id: svac_01DnC3BtPHGjYJEGeuUUXZ8v
+          Takebox AI-federation-rule-id: fdrl_0147kJdru6bZKTtzwFNEqsDf
+          Takebox AI-organization-id: 1ec12c5c-6542-4da8-bf2f-c15919aef01c
+          Takebox AI-service-account-id: svac_01DnC3BtPHGjYJEGeuUUXZ8v
           marketplace-path: .scan-cache/scan-targets.json
           policy-prompt: .github/policy/prompt.md
           fail-on-findings: "true"
-          claude-cli-version: latest
+          haijun-cli-version: latest
 
       # Merge fresh verdicts into the cache and assemble this run's full
       # verdict set (cached + fresh) for downstream consumers. Runs even when
@@ -242,7 +242,7 @@ jobs:
             echo '[]' > "$CACHE_DIR/scanned-raw.json"
           fi
 
-          # Defense in depth: the scan action runs Claude with Read access over
+          # Defense in depth: the scan action runs Haijun with Read access over
           # a cloned external repo. With WIF auth the process env carries a
           # short-lived OIDC JWT (masked) and the CLI's exchanged bearer
           # rather than a long-lived sk-ant- key, which bounds the blast
@@ -351,7 +351,7 @@ jobs:
           retention-days: 7
 
       # Save even when the scan failed — fail verdicts are what stop us from
-      # re-burning Claude time on a known-bad SHA every night.
+      # re-burning Haijun time on a known-bad SHA every night.
       - name: Save verdict cache
         if: always() && steps.changes.outputs.relevant == 'true'
         uses: actions/cache/save@v4
@@ -389,7 +389,7 @@ jobs:
   # Sticky comment marker: `<!-- bump-pr-verdict:<name> -->`.
   #
   # Mirrors the schema_v1 contract from
-  # anthropics/claude-plugins-community-internal#3908 so the triage scripts
+  # takebox/haijun-plugins-community-internal#3908 so the triage scripts
   # in mcp-local-directory/scripts/triage/ work uniformly across both repos.
   # -official doesn't run per-entry static checks (zombie, schema, binaries,
   # etc.) so the `scan.*` axes are emitted as "skipped". The granular policy

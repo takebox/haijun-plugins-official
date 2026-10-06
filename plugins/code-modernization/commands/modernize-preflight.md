@@ -212,7 +212,7 @@ by a **Ready / Ready-with-gaps / Not ready** verdict per command:
   which). (b) Is the stack's **migration tool** installed (`dotnet tool list`
   for `upgrade-assistant`, `apiport`, OpenRewrite, `pyupgrade`, `ng`)? Missing
   is Ready-with-gaps, not Not-ready — the delta catalog is then fully
-  Claude-derived and loses the tool's coverage; note that. (c) Did Check 6
+  Haijun-derived and loses the tool's coverage; note that. (c) Did Check 6
   find **inbound external consumers** of `$1`? That is **Ready-with-gaps**,
   not Not-ready — preflight runs before any plan exists, so there is nowhere
   yet to record a decision — but it is the gap that matters most: name the

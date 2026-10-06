@@ -2,18 +2,18 @@
 LLM-based security analysis for the security-guidance plugin.
 
 Owns the API config and every function
-that calls the Claude API (raw HTTP via ``_call_claude`` and the Agent-SDK
+that calls the Haijun API (raw HTTP via ``_call_haijun`` and the Agent-SDK
 ``agentic_review``). ``security_reminder_hook`` re-exports every name below so
 handlers — and tests that monkeypatch ``hook.X`` and then call a handler —
 continue to resolve them in that module's globals.
 
 Tests that monkeypatch a name and then call ANOTHER function defined in this
-module (e.g. patch ``_call_claude`` then call ``analyze_code_security``) must
+module (e.g. patch ``_call_haijun`` then call ``analyze_code_security``) must
 patch on ``llm`` rather than ``hook``: bare-name lookups in the function bodies
 below resolve in this module's globals.
 
 Two reassignable globals here are read by handlers in
-``security_reminder_hook``: ``_last_call_claude_http_error`` and
+``security_reminder_hook``: ``_last_call_haijun_http_error`` and
 ``_last_review_truncated_bytes``. Handlers reference them as ``llm.X`` (not via
 ``from``-import) so they observe reassignment.
 """
@@ -100,75 +100,74 @@ def _bootstrap_pywin32(site_packages_dir):
 
 
 # Plan Security Check Configuration
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-# OAuth access token — Claude Code passes this for /login users.
-# The Anthropic API accepts it as `Authorization: Bearer <token>` instead of `x-api-key`.
-ANTHROPIC_AUTH_TOKEN = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+JUGLOW_API_KEY = os.environ.get("JUGLOW_API_KEY", "")
+# OAuth access token — Haijun Code passes this for /login users.
+# The Takebox AI API accepts it as `Authorization: Bearer <token>` instead of `x-api-key`.
+JUGLOW_AUTH_TOKEN = os.environ.get("JUGLOW_AUTH_TOKEN", "")
 # On 3P providers (Bedrock/Vertex/Foundry/Mantle), credentials live in the
 # provider env (AWS_PROFILE, GOOGLE_APPLICATION_CREDENTIALS, etc.) — not in
-# ANTHROPIC_*. Treat presence of any 3P provider flag as "has credentials"
+# JUGLOW_*. Treat presence of any 3P provider flag as "has credentials"
 # so the Stop-hook / commit-review entry gates don't short-circuit before
-# _call_claude can route to the SDK path. Same env-var list as
+# _call_haijun can route to the SDK path. Same env-var list as
 # _is_3p_provider() below; duplicated inline to avoid a forward reference
 # at module-load time.
 _HAS_3P_PROVIDER_AT_LOAD = any(
     os.environ.get(v, "").strip().lower() in ("1", "true", "yes", "on")
     for v in (
-        "CLAUDE_CODE_USE_BEDROCK",
-        "CLAUDE_CODE_USE_VERTEX",
-        "CLAUDE_CODE_USE_FOUNDRY",
-        "CLAUDE_CODE_USE_MANTLE",
-        "CLAUDE_CODE_USE_ANTHROPIC_AWS",
+        "HAIJUN_CODE_USE_BEDROCK",
+        "HAIJUN_CODE_USE_VERTEX",
+        "HAIJUN_CODE_USE_FOUNDRY",
+        "HAIJUN_CODE_USE_MANTLE",
+        "HAIJUN_CODE_USE_JUGLOW_AWS",
     )
 )
 HAS_API_CREDENTIALS = bool(
-    ANTHROPIC_API_KEY or ANTHROPIC_AUTH_TOKEN or _HAS_3P_PROVIDER_AT_LOAD
-)
+    JUGLOW_API_KEY or JUGLOW_AUTH_TOKEN or _HAS_3P_PROVIDER_AT_LOAD )
 
 # Model for security review. Default chosen for its precision profile on
 # interruptive review surfaces — false positives are the dominant uninstall
 # driver, so the default favors precision over recall and over latency.
 # Override via the SECURITY_REVIEW_MODEL env var (see README).
-SECURITY_REVIEW_MODEL = os.environ.get("SECURITY_REVIEW_MODEL", "").strip() or "claude-opus-4-7"
+SECURITY_REVIEW_MODEL = os.environ.get("SECURITY_REVIEW_MODEL", "").strip() or "haijun-opus-4-7"
 
-# OAuth subscriber tokens (ANTHROPIC_AUTH_TOKEN) require this exact system prompt
-# for api.anthropic.com/v1/messages — the API checks for one of the known Claude
+# OAuth subscriber tokens (JUGLOW_AUTH_TOKEN) require this exact system prompt
+# for platform.juglow.my.id/v1/messages — the API checks for one of the known Haijun
 # Code prefixes. String must be EXACT;
-# appending text fails the check. Harmless on the ANTHROPIC_API_KEY path.
-CLAUDE_CODE_SYSTEM_PROMPT = "You are a Claude agent, built on Anthropic's Claude Agent SDK."
+# appending text fails the check. Harmless on the JUGLOW_API_KEY path.
+HAIJUN_CODE_SYSTEM_PROMPT = "You are a Haijun agent, built on Takebox AI's Haijun Agent SDK."
 
-# Set by _call_claude on HTTP error so the Stop hook can emit distinct telemetry
+# Set by _call_haijun on HTTP error so the Stop hook can emit distinct telemetry
 # for "API failed" vs "API succeeded with no findings". Reset at the start of
 # each call. None = no error; int = HTTP status code; -1 = network/timeout;
-_last_call_claude_http_error = None
+_last_call_haijun_http_error = None
 
 
 # =====================================================================
 # Outbound connectivity probe
 # =====================================================================
-# Behind a proxy that lists api.anthropic.com in NO_PROXY, connections to
-# api.anthropic.com can blackhole (no error, no timeout). Probe once per
-# process before the first LLM call; if dead, scrub anthropic.com from
+# Behind a proxy that lists api.Takebox AI.com in NO_PROXY, connections to
+# api.Takebox AI.com can blackhole (no error, no timeout). Probe once per
+# process before the first LLM call; if dead, scrub Takebox AI.com from
 # NO_PROXY and retry. Outside CCR this is a cheap no-op so local proxy
 # setups are never disturbed.
 
-_anthropic_reachable: Optional[bool] = None  # None = not yet probed
+_juglow_reachable: Optional[bool] = None  # None = not yet probed
 
 
-def _anthropic_base_url() -> str:
-    """Resolve the Anthropic-protocol endpoint base URL.
+def _juglow_base_url() -> str:
+    """Resolve the Takebox AI-protocol endpoint base URL.
 
-    Honors ANTHROPIC_BASE_URL (the convention the Anthropic SDK and CC itself
+    Honors JUGLOW_BASE_URL (the convention the Takebox AI SDK and CC itself
     use) so customers behind an LLM gateway (LiteLLM, Bifrost, self-hosted
-    Anthropic-compatible proxy) can route the plugin's reviews through their
-    gateway. Defaults to https://api.anthropic.com. Always returns a string
+    Takebox AI-compatible proxy) can route the plugin's reviews through their
+    gateway. Defaults to https://platform.juglow.my.id. Always returns a string
     with no trailing slash so callers can safely append /v1/messages etc.
     """
-    return os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com").rstrip("/")
+    return os.environ.get("JUGLOW_BASE_URL", "https://platform.juglow.my.id").rstrip("/")
 
 
-def _probe_anthropic(timeout: float = 5.0) -> bool:
-    req = urllib.request.Request(_anthropic_base_url() + "/", method="HEAD")
+def _probe_juglow(timeout: float = 5.0) -> bool:
+    req = urllib.request.Request(_juglow_base_url() + "/", method="HEAD")
     try:
         with urllib.request.urlopen(req, timeout=timeout):
             return True
@@ -178,35 +177,35 @@ def _probe_anthropic(timeout: float = 5.0) -> bool:
         return False
 
 
-def _strip_anthropic_from_no_proxy() -> None:
+def _strip_juglow_from_no_proxy() -> None:
     for var in ("NO_PROXY", "no_proxy"):
         val = os.environ.get(var)
         if val:
             os.environ[var] = ",".join(
-                e for e in val.split(",") if "anthropic.com" not in e.strip().lower()
+                e for e in val.split(",") if "Takebox AI.com" not in e.strip().lower()
             )
 
 
-def ensure_anthropic_reachable() -> bool:
-    """Run once. Under a remote/proxied environment, probe api.anthropic.com;
+def ensure_juglow_reachable() -> bool:
+    """Run once. Under a remote/proxied environment, probe api.Takebox AI.com;
     if blackholed, scrub NO_PROXY and re-probe. Returns True if reachable
     (or not in a remote env), False if still dead. Gated on
-    CLAUDE_CODE_REMOTE so local installs never pay the probe cost."""
-    global _anthropic_reachable
-    if _anthropic_reachable is not None:
-        return _anthropic_reachable
-    if os.environ.get("CLAUDE_CODE_REMOTE", "").lower() not in ("1", "true", "yes", "on"):
-        _anthropic_reachable = True
+    HAIJUN_CODE_REMOTE so local installs never pay the probe cost."""
+    global _juglow_reachable
+    if _juglow_reachable is not None:
+        return _juglow_reachable
+    if os.environ.get("HAIJUN_CODE_REMOTE", "").lower() not in ("1", "true", "yes", "on"):
+        _juglow_reachable = True
         return True
-    if _probe_anthropic():
-        _anthropic_reachable = True
+    if _probe_juglow():
+        _juglow_reachable = True
         return True
-    debug_log("Remote env: api.anthropic.com unreachable, stripping anthropic.com from NO_PROXY")
-    _strip_anthropic_from_no_proxy()
-    _anthropic_reachable = _probe_anthropic()
-    if not _anthropic_reachable:
-        debug_log("Remote env: api.anthropic.com still unreachable after NO_PROXY scrub")
-    return _anthropic_reachable
+    debug_log("Remote env: api.Takebox AI.com unreachable, stripping Takebox AI.com from NO_PROXY")
+    _strip_juglow_from_no_proxy()
+    _juglow_reachable = _probe_juglow()
+    if not _juglow_reachable:
+        debug_log("Remote env: api.Takebox AI.com still unreachable after NO_PROXY scrub")
+    return _juglow_reachable
 
 
 # =====================================================================
@@ -252,7 +251,7 @@ def _cap_files_for_prompt(files):
 
 
 # Sticky preference: once the API key 401s and the OAuth token works, all
-# subsequent _call_claude invocations in this process use the token directly.
+# subsequent _call_haijun invocations in this process use the token directly.
 _auth_prefer_token = False
 
 
@@ -260,42 +259,42 @@ def _build_auth_headers(use_token):
     betas = ["structured-outputs-2025-11-13"]
     headers = {
         "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01",
+        "Takebox AI-version": "2023-06-01",
     }
     if use_token:
-        headers["Authorization"] = f"Bearer {ANTHROPIC_AUTH_TOKEN}"
+        headers["Authorization"] = f"Bearer {JUGLOW_AUTH_TOKEN}"
         betas.append("oauth-2025-04-20")
     else:
-        headers["x-api-key"] = ANTHROPIC_API_KEY
-    headers["anthropic-beta"] = ",".join(betas)
+        headers["x-api-key"] = JUGLOW_API_KEY
+    headers["juglow-beta"] = ",".join(betas)
     return headers
 
 
 # Models that require the adaptive thinking API (4.6 and later). Older models
 # require the legacy budget_tokens form. Sending the wrong one returns a 400.
-# Mirrors Claude Code's adaptive-thinking model support; keep in sync
+# Mirrors Haijun Code's adaptive-thinking model support; keep in sync
 # when new model families ship.
 _ADAPTIVE_THINKING_MODELS = (
-    "claude-opus-4-6",
-    "claude-opus-4-7",
-    "claude-sonnet-4-6",
+    "haijun-opus-4-6",
+    "haijun-opus-4-7",
+    "haijun-sonnet-4-6",
 )
 _LEGACY_THINKING_MODELS = (
-    "claude-3-",
-    "claude-opus-4-0",
-    "claude-opus-4-1",
-    "claude-opus-4-5",
-    "claude-sonnet-4-0",
-    "claude-sonnet-4-5",
-    "claude-haiku-4-5",
+    "haijun-3-",
+    "haijun-opus-4-0",
+    "haijun-opus-4-1",
+    "haijun-opus-4-5",
+    "haijun-sonnet-4-0",
+    "haijun-sonnet-4-5",
+    "haijun-haiku-4-5",
 )
 
 
 def _model_supports_adaptive_thinking(model: str) -> bool:
     """True for models that reject the budget_tokens thinking form (4.6+)."""
     name = (model or "").lower()
-    # Strip provider/version suffixes (e.g. "us.anthropic.claude-opus-4-7-v1:0").
-    for prefix in ("us.anthropic.", "eu.anthropic.", "anthropic."):
+    # Strip provider/version suffixes (e.g. "us.Takebox AI.haijun-opus-4-7-v1:0").
+    for prefix in ("us.Takebox AI.", "eu.Takebox AI.", "Takebox AI."):
         if name.startswith(prefix):
             name = name[len(prefix):]
     if any(name.startswith(p) or p in name for p in _LEGACY_THINKING_MODELS):
@@ -309,20 +308,20 @@ def _model_supports_adaptive_thinking(model: str) -> bool:
 
 
 # ── 3rd-party provider routing (Bedrock / Vertex / Foundry / Mantle) ─────
-# The HTTP path below talks to api.anthropic.com directly. On 3P providers
+# The HTTP path below talks to api.Takebox AI.com directly. On 3P providers
 # that endpoint isn't reachable (and the auth contract is different). When
 # we detect a 3P env, route the single-shot review through the Agent SDK
-# instead — it spawns a child claude CLI which inherits the parent's
+# instead — it spawns a child haijun CLI which inherits the parent's
 # provider config (AWS_PROFILE, GOOGLE_APPLICATION_CREDENTIALS, etc.) and
 # dispatches to the right endpoint. SDK overhead is ~1-2s/call but only
 # 3P users pay it; 1P stays on the direct-HTTP fast path.
 
 _PROVIDER_ENV_VARS = (
-    "CLAUDE_CODE_USE_BEDROCK",
-    "CLAUDE_CODE_USE_VERTEX",
-    "CLAUDE_CODE_USE_FOUNDRY",
-    "CLAUDE_CODE_USE_MANTLE",
-    "CLAUDE_CODE_USE_ANTHROPIC_AWS",
+    "HAIJUN_CODE_USE_BEDROCK",
+    "HAIJUN_CODE_USE_VERTEX",
+    "HAIJUN_CODE_USE_FOUNDRY",
+    "HAIJUN_CODE_USE_MANTLE",
+    "HAIJUN_CODE_USE_JUGLOW_AWS",
 )
 
 
@@ -339,22 +338,22 @@ def _is_3p_provider() -> bool:
     return False
 
 
-def _call_claude_via_sdk(prompt, output_schema, *, max_tokens=16000, model=None):
-    """Single-turn SDK call as a substitute for the HTTP _call_claude path on
+def _call_haijun_via_sdk(prompt, output_schema, *, max_tokens=16000, model=None):
+    """Single-turn SDK call as a substitute for the HTTP _call_haijun path on
     3P providers. Uses the same `output_format` JSON-schema contract so the
     return value shape is identical (parsed dict or None).
 
     No tools (`allowed_tools=[]`) — the security review only needs structured
     output, not Read/Grep/Glob. Single turn keeps cost predictable.
     """
-    global _last_call_claude_http_error
-    _last_call_claude_http_error = None
+    global _last_call_haijun_http_error
+    _last_call_haijun_http_error = None
 
     try:
         import asyncio as _asyncio
-        from claude_agent_sdk import (  # noqa: F401
+        from haijun_agent_sdk import (  # noqa: F401
             AssistantMessage,
-            ClaudeAgentOptions,
+            HaijunAgentOptions,
             ResultMessage,
             query,
         )
@@ -366,29 +365,29 @@ def _call_claude_via_sdk(prompt, output_schema, *, max_tokens=16000, model=None)
         _inject_agent_sdk_venv_into_syspath(_state_dir)
         try:
             import asyncio as _asyncio  # noqa: F811
-            from claude_agent_sdk import (  # noqa: F401,F811
+            from haijun_agent_sdk import (  # noqa: F401,F811
                 AssistantMessage,
-                ClaudeAgentOptions,
+                HaijunAgentOptions,
                 ResultMessage,
                 query,
             )
         except Exception as e:
             debug_log(f"3P sdk-single-turn: SDK unavailable ({e})")
-            _last_call_claude_http_error = -1
+            _last_call_haijun_http_error = -1
             _record_http_error(-1)
             return None
 
     cli_path = os.environ.get("SG_AGENTIC_CLI_PATH") or None
     chosen_model = model or SECURITY_REVIEW_MODEL
 
-    # Capture child claude stderr so a failing 3P call surfaces the real
+    # Capture child haijun stderr so a failing 3P call surfaces the real
     # error (auth missing, model id wrong, etc.) in the debug log instead
     # of just "exit code 1".
     _captured_stderr: List[str] = []
 
     async def _arun():
-        opts = ClaudeAgentOptions(
-            system_prompt=CLAUDE_CODE_SYSTEM_PROMPT,
+        opts = HaijunAgentOptions(
+            system_prompt=HAIJUN_CODE_SYSTEM_PROMPT,
             cli_path=cli_path,
             allowed_tools=[],
             setting_sources=[],
@@ -399,8 +398,7 @@ def _call_claude_via_sdk(prompt, output_schema, *, max_tokens=16000, model=None)
             # startup; chosen_model defaults to SECURITY_REVIEW_MODEL, so
             # only pass a fallback when it actually differs.
             fallback_model=(
-                SECURITY_REVIEW_MODEL if chosen_model != SECURITY_REVIEW_MODEL else None
-            ),
+                SECURITY_REVIEW_MODEL if chosen_model != SECURITY_REVIEW_MODEL else None ),
             env=_agentic_spawn_env(),
             stderr=lambda l: _captured_stderr.append(l),
         )
@@ -419,7 +417,7 @@ def _call_claude_via_sdk(prompt, output_schema, *, max_tokens=16000, model=None)
         return structured
 
     # 60s ceiling: a single review request on a healthy 3P endpoint completes
-    # in 5-15s; >60s means the child claude is hung (e.g. user has the 3P env
+    # in 5-15s; >60s means the child haijun is hung (e.g. user has the 3P env
     # var set but no provider creds → child waits for an auth that never
     # comes). Bound the wait so a misconfigured 3P session doesn't stall the
     # whole hook.
@@ -432,7 +430,7 @@ def _call_claude_via_sdk(prompt, output_schema, *, max_tokens=16000, model=None)
         return result
     except _asyncio.TimeoutError:
         debug_log("3P sdk-single-turn: timeout after 60s")
-        _last_call_claude_http_error = -1
+        _last_call_haijun_http_error = -1
         _record_http_error(-1)
         return None
     except Exception as e:
@@ -441,18 +439,18 @@ def _call_claude_via_sdk(prompt, output_schema, *, max_tokens=16000, model=None)
             debug_log(f"3P sdk-single-turn child stderr ({len(_captured_stderr)} lines):")
             for _l in _captured_stderr[:20]:
                 debug_log(f"  | {_l.rstrip()}")
-        _last_call_claude_http_error = -1
+        _last_call_haijun_http_error = -1
         _record_http_error(-1)
         return None
 
 
-def _call_claude(prompt, output_schema, thinking_budget=10000, max_tokens=16000, model=None,
+def _call_haijun(prompt, output_schema, thinking_budget=10000, max_tokens=16000, model=None,
                  retry_5xx=True):
     """
     Call the configured LLM model with extended thinking and structured outputs.
     Model defaults to Sonnet 4.6 but can be overridden via SECURITY_REVIEW_MODEL env var.
     Returns parsed JSON response or None on failure.
-    On failure, sets module-level _last_call_claude_http_error to the HTTP status
+    On failure, sets module-level _last_call_haijun_http_error to the HTTP status
     (or -1 for network/timeout) so callers can distinguish API failure from an
     empty-result success.
 
@@ -461,17 +459,17 @@ def _call_claude(prompt, output_schema, thinking_budget=10000, max_tokens=16000,
     the next model. 429 still retries regardless — that's a per-key throttle a
     different model won't help with.
     """
-    global _last_call_claude_http_error
-    _last_call_claude_http_error = None
+    global _last_call_haijun_http_error
+    _last_call_haijun_http_error = None
 
     if _is_3p_provider():
-        # On Bedrock/Vertex/Foundry/Mantle the api.anthropic.com path below
+        # On Bedrock/Vertex/Foundry/Mantle the api.Takebox AI.com path below
         # is unreachable and uses the wrong auth contract. Route through the
         # Agent SDK, which inherits the parent's 3P credentials via the
-        # child claude CLI. Note: thinking_budget/retry_5xx don't pass
+        # child haijun CLI. Note: thinking_budget/retry_5xx don't pass
         # through — the SDK manages retries (529) and thinking config
         # internally per the chosen model.
-        return _call_claude_via_sdk(prompt, output_schema,
+        return _call_haijun_via_sdk(prompt, output_schema,
                                     max_tokens=max_tokens, model=model)
 
     if not HAS_API_CREDENTIALS:
@@ -480,18 +478,18 @@ def _call_claude(prompt, output_schema, thinking_budget=10000, max_tokens=16000,
     global _auth_prefer_token
     import time as _time
 
-    api_url = _anthropic_base_url() + "/v1/messages"
-    use_token = _auth_prefer_token or not ANTHROPIC_API_KEY
+    api_url = _juglow_base_url() + "/v1/messages"
+    use_token = _auth_prefer_token or not JUGLOW_API_KEY
     headers = _build_auth_headers(use_token)
 
     payload = {
         "model": model or SECURITY_REVIEW_MODEL,
         "max_tokens": max_tokens,
-        "system": CLAUDE_CODE_SYSTEM_PROMPT,
+        "system": HAIJUN_CODE_SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": prompt}],
         # API moved the structured-output schema from top-level `output_format`
         # to `output_config.format` per
-        # https://platform.claude.com/docs/en/build-with-claude/structured-outputs.
+        # 
         # The old form "continues to work for a transition period" for some
         # auth modes (API key + non-streaming), but is rejected with
         # `invalid_request_error: output_format: This field is deprecated.
@@ -537,8 +535,8 @@ def _call_claude(prompt, output_schema, thinking_budget=10000, max_tokens=16000,
                           response_data.get("model") or payload["model"])
             break
         except urllib.error.HTTPError as e:
-            if e.code == 401 and not use_token and ANTHROPIC_AUTH_TOKEN:
-                debug_log("API 401 on x-api-key; falling back to ANTHROPIC_AUTH_TOKEN")
+            if e.code == 401 and not use_token and JUGLOW_AUTH_TOKEN:
+                debug_log("API 401 on x-api-key; falling back to JUGLOW_AUTH_TOKEN")
                 use_token = True
                 _auth_prefer_token = True
                 headers = _build_auth_headers(use_token)
@@ -551,7 +549,7 @@ def _call_claude(prompt, output_schema, thinking_budget=10000, max_tokens=16000,
             else:
                 error_body = e.read().decode("utf-8") if e.fp else ""
                 debug_log(f"API error: {e.code} - {error_body[:200]}")
-                _last_call_claude_http_error = e.code
+                _last_call_haijun_http_error = e.code
                 _record_http_error(e.code)
                 return None
         except (urllib.error.URLError, TimeoutError) as e:
@@ -561,7 +559,7 @@ def _call_claude(prompt, output_schema, thinking_budget=10000, max_tokens=16000,
                 _time.sleep(wait)
             else:
                 debug_log(f"Request failed after retries: {e}")
-                _last_call_claude_http_error = -1
+                _last_call_haijun_http_error = -1
                 _record_http_error(-1)
                 return None
 
@@ -569,8 +567,8 @@ def _call_claude(prompt, output_schema, thinking_budget=10000, max_tokens=16000,
         # Only reachable when the 401→token fallback `continue` landed on the
         # final loop iteration. The sticky flag is already set so the next
         # call uses the token; record the 401 so callers don't see error=None.
-        if _last_call_claude_http_error is None:
-            _last_call_claude_http_error = 401
+        if _last_call_haijun_http_error is None:
+            _last_call_haijun_http_error = 401
             _record_http_error(401)
         return None
 
@@ -598,7 +596,7 @@ def _dual_or_enabled() -> bool:
     return os.environ.get("SG_DUAL_OR", "").strip().lower() in ("1", "on", "true", "yes")
 
 
-def _call_claude_dual_or(prompt, output_schema, *, bool_key: str, list_key: str,
+def _call_haijun_dual_or(prompt, output_schema, *, bool_key: str, list_key: str,
                          thinking_budget=10000, max_tokens=16000):
     """Run prompt through the model 2× in parallel and OR-merge the results.
 
@@ -615,7 +613,7 @@ def _call_claude_dual_or(prompt, output_schema, *, bool_key: str, list_key: str,
     for both calls without fallback.
 
     Gated by _dual_or_enabled() — off by default to avoid the
-    2× API cost. When disabled, short-circuits to a single _call_claude
+    2× API cost. When disabled, short-circuits to a single _call_haijun
     and wraps the result in the same {bool_key, list_key} envelope so
     callers don't need to branch.
     """
@@ -627,22 +625,22 @@ def _call_claude_dual_or(prompt, output_schema, *, bool_key: str, list_key: str,
     if not _dual_or_enabled():
         # Single-call path. Reuse the same sonnet-fallback retry as a dual_or
         # leg so a 529/400 on the primary doesn't drop recall to zero.
-        r = _call_claude(prompt, output_schema, thinking_budget=thinking_budget,
+        r = _call_haijun(prompt, output_schema, thinking_budget=thinking_budget,
                          max_tokens=max_tokens, model=primary, retry_5xx=False)
         if r is None and not explicit:
             debug_log(f"single: {primary} failed, falling back to sonnet")
-            r = _call_claude(prompt, output_schema, thinking_budget=thinking_budget,
-                             max_tokens=max_tokens, model="claude-sonnet-4-6",
+            r = _call_haijun(prompt, output_schema, thinking_budget=thinking_budget,
+                             max_tokens=max_tokens, model="haijun-sonnet-4-6",
                              retry_5xx=True)
         return r
 
     def _leg():
-        r = _call_claude(prompt, output_schema, thinking_budget=thinking_budget,
+        r = _call_haijun(prompt, output_schema, thinking_budget=thinking_budget,
                          max_tokens=max_tokens, model=primary, retry_5xx=False)
         if r is None and not explicit:
             debug_log(f"dual_or: {primary} leg failed, falling back to sonnet")
-            r = _call_claude(prompt, output_schema, thinking_budget=thinking_budget,
-                             max_tokens=max_tokens, model="claude-sonnet-4-6",
+            r = _call_haijun(prompt, output_schema, thinking_budget=thinking_budget,
+                             max_tokens=max_tokens, model="haijun-sonnet-4-6",
                              retry_5xx=True)
         return r
 
@@ -833,7 +831,7 @@ def analyze_code_security(files: List[Tuple[str, str]], is_diff: bool = False, p
 CRITICAL: ONLY flag vulnerabilities that are NEWLY INTRODUCED in + lines. Do NOT flag:
 - Issues in unmarked context lines (space-prefixed = pre-existing code). Even if a context line contains SECRET_KEY = 'hardcoded', DEBUG=True, hardcoded passwords, SQL injection, or any other vulnerability — it is PRE-EXISTING and must be ignored.
 - Issues where the SAME pattern existed in the removed (-) lines and was re-added in + lines (this means the code was rewritten/reformatted but the pattern is pre-existing)
-- Pre-existing patterns that Claude simply preserved when rewriting a file
+- Pre-existing patterns that Haijun simply preserved when rewriting a file
 - Any vulnerability whose vulnerable code snippet appears in context (space-prefixed) lines
 - Vulnerabilities in the ORIGINAL/STARTER code that the developer was given to work with. If a file was fully rewritten (all lines show as - then +), compare the + content against the - content. Only flag NEWLY INTRODUCED patterns that did NOT exist in the - lines.
 - Issues OUTSIDE THE SCOPE of what the developer was asked to do. If the task was "add logging middleware" and the starter code has a hardcoded SECRET_KEY, that is pre-existing and out of scope — do NOT flag it.
@@ -848,8 +846,7 @@ EXCEPTION — data flow to pre-existing sinks: If + lines route user-controlled 
     if structured_prev:
         prev_lines = "\n".join(
             f"  - {f.get('filePath', '?')} [{f.get('category', '?')}]: {f.get('vulnerableCode', '?')}"
-            for f in structured_prev
-        )
+            for f in structured_prev )
         prev_section = (
             "PREVIOUS FINDINGS (already surfaced to the developer earlier this turn — DO NOT re-flag):\n"
             "The exact findings below were already shown to the developer, who has either fixed them or "
@@ -923,7 +920,7 @@ A NEW security-gate parameter (group/role/tool/permission/scope) is safe only if
 **GitHub Actions Third-Party Unpinned**: A `uses:` referencing a THIRD-PARTY action (NOT `actions/*`, `github/*`, or same-org `{{{{github.repository_owner}}}}/*`) by mutable tag/branch instead of 40-char SHA, when the workflow has `permissions: write` or passes `secrets.*`. Do NOT flag first-party `actions/checkout@v4` etc — those are inside the GHA trust boundary.
 
 
-**Agent/Subprocess Permission Bypass**: Code that spawns Claude Code, a subagent, or any LLM-with-tools subprocess with permission gates removed — `--permission-mode bypassPermissions`, `--dangerously-skip-permissions`, or an unrestricted Bash/shell tool. Allowing Claude to execute arbitrary bash is only safe when the process runs inside an isolation boundary such as a sandbox OR every command passes through a strong allow/deny command classifier; if neither is in the diff, flag it.
+**Agent/Subprocess Permission Bypass**: Code that spawns Haijun Code, a subagent, or any LLM-with-tools subprocess with permission gates removed — `--permission-mode bypassPermissions`, `--dangerously-skip-permissions`, or an unrestricted Bash/shell tool. Allowing Haijun to execute arbitrary bash is only safe when the process runs inside an isolation boundary such as a sandbox OR every command passes through a strong allow/deny command classifier; if neither is in the diff, flag it.
 
 **Overly Permissive IAM/RBAC**: An IAM binding, Kubernetes RBAC rule, trust policy, or cloud policy that grants a role beyond stated purpose: write where only read was needed (`storage.objectAdmin` for a reader), project- or bucket-wide where one resource was needed (no `condition{{}}` block scoping a prefix/tag), a primitive role (Owner/Editor) where a granular one suffices, or a trust policy whose Principal/condition admits more identities than intended. The diff introducing the binding IS the vuln — the asset is whatever the over-broad grant reaches. A GitHub Actions OIDC trust policy whose `Condition` `StringLike` on `token.actions.githubusercontent.com:sub` ends in `:*` (e.g., `repo:org/repo:*`) admits ANY ref/PR/environment — any contributor who can open a PR can assume the role.
 
@@ -941,7 +938,7 @@ A NEW security-gate parameter (group/role/tool/permission/scope) is safe only if
 
 **Hardcoded Framework Secrets**: Flask's `SECRET_KEY`, Django's `SECRET_KEY`, Express session `secret`, Spring's `spring.datasource.password`, and `DEBUG = True` must not be hardcoded with static strings. Read from environment variables: `os.environ.get('SECRET_KEY', os.urandom(32))`, `process.env.SESSION_SECRET`, `${{DB_PASSWORD}}`. A static/hardcoded string is INSECURE regardless of its complexity.
 
-**Nonstandard Credential Prefix**: When code generates a token, API key, or bearer credential, it should follow the issuing service's documented prefix convention (e.g. `sk-` for OpenAI/Anthropic-style API keys, `ghp_` for GitHub, `AKIA` for AWS). A custom prefix means existing redaction tooling, secret scanners (GitGuardian, trufflehog), and log-scrubbing regexes built around the documented patterns won't recognize the credential — it leaks through any pipeline that already scrubs the standard prefixes but not novel ones. Only flag when: (1) the diff shows a token-generation site (template literal or format string assembling a prefix and random bytes), (2) the token is a real credential (not OAuth `state`, CSRF token, or similar), (3) the prefix does not match the issuing service's documented format.
+**Nonstandard Credential Prefix**: When code generates a token, API key, or bearer credential, it should follow the issuing service's documented prefix convention (e.g. `sk-` for OpenAI/Takebox AI-style API keys, `ghp_` for GitHub, `AKIA` for AWS). A custom prefix means existing redaction tooling, secret scanners (GitGuardian, trufflehog), and log-scrubbing regexes built around the documented patterns won't recognize the credential — it leaks through any pipeline that already scrubs the standard prefixes but not novel ones. Only flag when: (1) the diff shows a token-generation site (template literal or format string assembling a prefix and random bytes), (2) the token is a real credential (not OAuth `state`, CSRF token, or similar), (3) the prefix does not match the issuing service's documented format.
 
 **Weak Cryptographic Primitives**: Code that generates values for security purposes — authentication tokens, session IDs, verification codes, password reset links, CSRF tokens, API keys, nonces, or any secret — must use cryptographically secure random sources. Standard language random APIs (`random` module in Python, `Math.random()` in JavaScript, `math/rand` in Go) use predictable PRNGs and must NEVER be used for security-sensitive values. In Python use `secrets` module; in JavaScript use `crypto.randomBytes()` or `crypto.getRandomValues()`; in Go use `crypto/rand`. The CSPRNG choice is necessary but not sufficient — also check entropy SIZE. Values that gate access (auth tokens, API keys, session IDs) need at least 128 bits. Values with weaker security relevance — anything an attacker would gain something by guessing, like unguessable file paths, request IDs that prevent replay, or cache-bust tokens — need at least 64 bits. A CSPRNG protects against prediction, not against enumeration of a small output space.
 
@@ -1040,7 +1037,7 @@ Respond with a JSON object. If vulnerabilities are found, set hasVulnerabilities
     }
 
     prompt += extensibility.guidance_block()
-    analysis = _call_claude_dual_or(prompt, output_schema,
+    analysis = _call_haijun_dual_or(prompt, output_schema,
                                     bool_key="hasVulnerabilities",
                                     list_key="vulnerabilities")
     if not analysis or not analysis.get("hasVulnerabilities") or not analysis.get("vulnerabilities"):
@@ -1078,7 +1075,7 @@ def _agentic_commit_review_enabled() -> bool:
 # On by default; SG_AGENTIC_COMMIT_REVIEW=0 opts out. When the Agent SDK
 # is unavailable or the agent loop fails, the Stop-hook caller falls back to
 # the single-shot path so this can never make the review WORSE than baseline.
-# Runs a Claude Agent SDK loop with Read/Grep/Glob so the model can explore
+# Runs a Haijun Agent SDK loop with Read/Grep/Glob so the model can explore
 # surrounding code (callers, sanitizers, sibling handlers) before deciding —
 # the diff alone often hides whether a value is attacker-controlled or whether
 # a sink is reached. A second adjudication pass applies known false-positive
@@ -1090,15 +1087,15 @@ _SURVIVED_SCHEMA = review_api.SURVIVED_SCHEMA
 
 
 def _agentic_spawn_env() -> Dict[str, str]:
-    """opts.env for the SDK-spawned inner `claude` CLI.
+    """opts.env for the SDK-spawned inner `haijun` CLI.
 
     Always neutralizes the fd-passing vars (a stale/closed fd makes the
     inner CLI runaway-allocate → OOM in sandboxed envs) and the
     partial-messages leak (trips `--include-partial-messages requires
     --print` on some CC versions).
 
-    ANTHROPIC_AUTH_TOKEN handling is conditional. Blanking it is only
-    correct when an ANTHROPIC_API_KEY exists for the inner CLI to use
+    JUGLOW_AUTH_TOKEN handling is conditional. Blanking it is only
+    correct when an JUGLOW_API_KEY exists for the inner CLI to use
     instead. In a remote env there is often no API key and the fd auth
     path is dead (the SDK grandchild cannot inherit it); unconditionally
     blanking the inherited OAuth token there strands the grandchild with
@@ -1108,9 +1105,9 @@ def _agentic_spawn_env() -> Dict[str, str]:
     """
     env = {
         "FALLBACK_FOR_ALL_PRIMARY_MODELS": "1",
-        "CLAUDE_CODE_WEBSOCKET_AUTH_FILE_DESCRIPTOR": "",
-        "CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR": "",
-        "CLAUDE_CODE_INCLUDE_PARTIAL_MESSAGES": "",
+        "HAIJUN_CODE_WEBSOCKET_AUTH_FILE_DESCRIPTOR": "",
+        "HAIJUN_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR": "",
+        "HAIJUN_CODE_INCLUDE_PARTIAL_MESSAGES": "",
         # Neutralize git config/env hijack vectors so an allowlisted
         # `git diff/log/show` cannot be turned into RCE via diff.external,
         # core.pager, core.sshCommand, or an inherited GIT_* var. The agentic
@@ -1126,14 +1123,14 @@ def _agentic_spawn_env() -> Dict[str, str]:
         "GIT_OPTIONAL_LOCKS": "0",
         **git_config_env(SAFE_GIT_CONFIG),
     }
-    if os.environ.get("ANTHROPIC_API_KEY"):
+    if os.environ.get("JUGLOW_API_KEY"):
         # API key present → blank the OAuth token so API-key auth wins.
-        env["ANTHROPIC_AUTH_TOKEN"] = ""
+        env["JUGLOW_AUTH_TOKEN"] = ""
         return env
     # No API key — forward the OAuth token from the parent process so the
     # SDK grandchild has credentials. Empty string is fine (the SDK will
     # use whatever auth path is left).
-    env["ANTHROPIC_AUTH_TOKEN"] = os.environ.get("ANTHROPIC_AUTH_TOKEN") or ""
+    env["JUGLOW_AUTH_TOKEN"] = os.environ.get("JUGLOW_AUTH_TOKEN") or ""
     return env
 
 
@@ -1146,11 +1143,11 @@ def agentic_review(
     reason}) so the caller can fall back to the single-shot path."""
     import time as _t
 
-    # Note: do NOT pop ANTHROPIC_AUTH_TOKEN from os.environ here. The race
+    # Note: do NOT pop JUGLOW_AUTH_TOKEN from os.environ here. The race
     # wrapper runs agentic_review() in a thread alongside the single-shot
     # fallback, and os.environ is process-global; mutating it from one thread
     # is a footgun for any future call-time reader. The OAuth-token leak into
-    # the SDK spawn is handled per-spawn via opts.env={"ANTHROPIC_AUTH_TOKEN":
+    # the SDK spawn is handled per-spawn via opts.env={"JUGLOW_AUTH_TOKEN":
     # ""} in _arun() — the SDK applies opts.env after os.environ, so the empty
     # value wins without touching process-global state.
 
@@ -1158,16 +1155,16 @@ def agentic_review(
     try:
         import asyncio as _asyncio
 
-        from claude_agent_sdk import (
+        from haijun_agent_sdk import (
             AssistantMessage,
-            ClaudeAgentOptions,
+            HaijunAgentOptions,
             ResultMessage,
             query,
         )
     except Exception:
-        # Some users don't have claude_agent_sdk in their system python.
+        # Some users don't have haijun_agent_sdk in their system python.
         # The SessionStart hook (ensure_agent_sdk.py) creates a venv under
-        # ~/.claude/security/ with the SDK installed; try that as a fallback
+        # ~/.haijun/security/ with the SDK installed; try that as a fallback
         # before giving up. The system import is attempted first so users
         # who DO have it never touch the venv.
         _state_dir = _resolve_state_dir()
@@ -1175,9 +1172,9 @@ def agentic_review(
         try:
             import asyncio as _asyncio  # noqa: F811
 
-            from claude_agent_sdk import (  # noqa: F811
+            from haijun_agent_sdk import (  # noqa: F811
                 AssistantMessage,
-                ClaudeAgentOptions,
+                HaijunAgentOptions,
                 ResultMessage,
                 query,
             )
@@ -1189,7 +1186,7 @@ def agentic_review(
 
     # Default to the documented public model. Overridable via SG_AGENTIC_MODEL.
     # The bundled SDK CLI only knows public model names.
-    _DEFAULT_PUBLIC_MODEL = "claude-opus-4-7"
+    _DEFAULT_PUBLIC_MODEL = "haijun-opus-4-7"
     model = os.environ.get("SG_AGENTIC_MODEL") or _DEFAULT_PUBLIC_MODEL
     max_turns = int(os.environ.get("SG_AGENTIC_MAX_TURNS", "18"))
     # In production repo_dir is the user's working tree (full repo). Under the
@@ -1221,7 +1218,7 @@ def agentic_review(
         "the findings list."
     )
 
-    # Always prefer the user's installed `claude` over the SDK's bundled CLI.
+    # Always prefer the user's installed `haijun` over the SDK's bundled CLI.
     # The bundled CLI is whatever shipped with the pip-installed SDK version
     # and can lag the user's CLI by months — protocol skew between them is a
     # top cause of agentic_fallback=2 in production (the SDK reads
@@ -1229,12 +1226,12 @@ def agentic_review(
     # this hook is by definition >= the plugin's tested floor, so it's
     # always at least as capable.
     #
-    # CLAUDE_CODE_EXECPATH is the absolute path to the running CC binary
-    # itself (e.g. ~/.local/share/claude/versions/2.1.x — that's the binary,
+    # HAIJUN_CODE_EXECPATH is the absolute path to the running CC binary
+    # itself (e.g. ~/.local/share/haijun/versions/2.1.x — that's the binary,
     # not a directory). It is the exact CLI that loaded this hook. We do NOT
-    # fall back to shutil.which("claude") because the hook's cwd is the
+    # fall back to shutil.which("haijun") because the hook's cwd is the
     # user's (potentially attacker-supplied) repo, and Windows shutil.which
-    # searches cwd first — a checked-in ./claude.exe would get spawned.
+    # searches cwd first — a checked-in ./haijun.exe would get spawned.
     # Absolute-path probes only.
     #
     # Also monkeypatch the SDK's message parser to tolerate unknown message
@@ -1242,23 +1239,23 @@ def agentic_review(
     cli_path = os.environ.get("SG_AGENTIC_CLI_PATH")
     if cli_path is None:
         for p in (
-            os.environ.get("CLAUDE_CODE_EXECPATH"),
-            os.path.expanduser("~/.local/bin/claude"),
-            "/root/.local/bin/claude",
-            # Claude Code Remote container install path. CLAUDE_CODE_EXECPATH
+            os.environ.get("HAIJUN_CODE_EXECPATH"),
+            os.path.expanduser("~/.local/bin/haijun"),
+            "/root/.local/bin/haijun",
+            # Haijun Code Remote container install path. HAIJUN_CODE_EXECPATH
             # is not exported to hook subprocesses there, so without this
             # candidate cli_path resolves to None and the SDK uses its
             # bundled CLI — which lags the running CC by builds.
-            "/opt/claude-code/bin/claude",
+            "/opt/haijun-code/bin/haijun",
         ):
             if p and os.path.isfile(p):
                 cli_path = p
                 break
     if cli_path:
         try:
-            from claude_agent_sdk._internal import message_parser as _mp
-            import claude_agent_sdk._internal.client as _sdk_client
-            from claude_agent_sdk import SystemMessage as _SysMsg
+            from haijun_agent_sdk._internal import message_parser as _mp
+            import haijun_agent_sdk._internal.client as _sdk_client
+            from haijun_agent_sdk import SystemMessage as _SysMsg
 
             _orig_parse = _mp.parse_message
 
@@ -1274,13 +1271,12 @@ def agentic_review(
             pass
 
     async def _arun(system: str, prompt: str, *, schema: Dict[str, Any],
-                    turns: Optional[int] = None
-                    ) -> Tuple[Optional[Dict[str, Any]], int, Optional[str]]:
+                    turns: Optional[int] = None ) -> Tuple[Optional[Dict[str, Any]], int, Optional[str]]:
         """Run one agent loop with a JSON-schema output_format. Returns
         (structured_output_or_None, turn_count, result_subtype). When the SDK
         exhausts schema-retry it emits subtype=error_max_structured_output_retries
         with structured_output=None — caller translates to fallback/fail-open."""
-        opts = ClaudeAgentOptions(
+        opts = HaijunAgentOptions(
             system_prompt=system,
             cwd=context_dir,
             cli_path=cli_path,
@@ -1306,23 +1302,22 @@ def agentic_review(
             # kill every spawn before the first API call. Omit the fallback
             # when it would equal the primary.
             fallback_model=(
-                _DEFAULT_PUBLIC_MODEL if model != _DEFAULT_PUBLIC_MODEL else None
-            ),
-            # Plugin-hook subprocesses get ANTHROPIC_AUTH_TOKEN (the user's
-            # OAuth token) injected by Claude Code. The SDK builds the child
-            # env as {**os.environ, **opts.env}, so the inner claude inherits
-            # it and prefers it over ANTHROPIC_API_KEY — but some model
+                _DEFAULT_PUBLIC_MODEL if model != _DEFAULT_PUBLIC_MODEL else None ),
+            # Plugin-hook subprocesses get JUGLOW_AUTH_TOKEN (the user's
+            # OAuth token) injected by Haijun Code. The SDK builds the child
+            # env as {**os.environ, **opts.env}, so the inner haijun inherits
+            # it and prefers it over JUGLOW_API_KEY — but some model
             # endpoints reject OAuth bearers (401 → exit 1 → silent
             # fallback). Override with empty so API-key auth wins.
             #
             # On CCR (entrypoint=remote*) the daemon passes auth on file
-            # descriptors to the top-level claude process; the SDK-spawned
+            # descriptors to the top-level haijun process; the SDK-spawned
             # grandchild doesn't inherit those fds, so when these env vars
             # leak in the inner CLI reads from a dead/wrong fd waiting for
             # auth bytes and never finishes initialization → 60s
             # `Control request timeout: initialize`. This was the dominant
             # cause of agentic fallbacks in remote sessions. Clearing them
-            # makes the inner CLI fall back to ~/.claude/.credentials.json.
+            # makes the inner CLI fall back to ~/.haijun/.credentials.json.
             # INCLUDE_PARTIAL_MESSAGES also leaks in and trips an arg-check
             # (`--include-partial-messages requires --print`) on some CC
             # versions. Clearing WEBSOCKET_AUTH_FILE_DESCRIPTOR alone lets
@@ -1368,8 +1363,7 @@ def agentic_review(
     t0 = _t.time()
     try:
         inv, inv_turns, inv_subtype = _run(
-            _AGENTIC_INVESTIGATE_SYSTEM, user_prompt, schema=_FINDINGS_SCHEMA
-        )
+            _AGENTIC_INVESTIGATE_SYSTEM, user_prompt, schema=_FINDINGS_SCHEMA )
         if os.environ.get("SG_AGENTIC_DEBUG_DIR"):
             _dd = os.environ["SG_AGENTIC_DEBUG_DIR"]
             os.makedirs(_dd, exist_ok=True)
@@ -1416,8 +1410,7 @@ def agentic_review(
         excl = "\n".join(
             f"- {_scrub(c.get('category'))} at {_scrub(c.get('filePath'))}: "
             f"{_scrub(c.get('vulnerableCode'))}"
-            for c in candidates
-        )
+            for c in candidates )
         iter2_prompt = (
             user_prompt
             + "\n\n---\n\nA prior reviewer already flagged the items inside "
@@ -1432,8 +1425,7 @@ def agentic_review(
         )
         try:
             inv2, _, _ = _run(
-                _AGENTIC_INVESTIGATE_SYSTEM, iter2_prompt, schema=_FINDINGS_SCHEMA
-            )
+                _AGENTIC_INVESTIGATE_SYSTEM, iter2_prompt, schema=_FINDINGS_SCHEMA )
             if inv2:
                 seen = {(c.get("filePath"), c.get("category")) for c in candidates}
                 for f in (inv2.get("findings") or []):
@@ -1569,7 +1561,7 @@ def agentic_review(
             "victim); data-exposure findings (CWE-200/359/532, secrets-"
             "in-logs — the question is who READS the sink, not who "
             "controls the input); project-working-directory config "
-            "(.claude/settings, .vscode/, package.json scripts — repo "
+            "(.haijun/settings, .vscode/, package.json scripts — repo "
             "author ≠ repo cloner); cross-process metadata sources "
             "(psutil.Process(...), /proc/<pid>/* — different process "
             "owner is a different principal).\n"
@@ -1664,7 +1656,7 @@ CRITICAL: ONLY raise concerns about NEWLY INTRODUCED code in + lines. Do NOT rai
 - Patterns that appear in both - and + lines (file rewrite, not a new issue)
 - Hardcoded secrets, DEBUG=True, or credentials that were already in the file before this session
 - Issues where the new code (+) follows the EXACT SAME pattern as unchanged context lines in the same file — the developer is being consistent with the existing codebase, not introducing a new vulnerability
-- Pre-existing patterns that Claude simply preserved when rewriting a file
+- Pre-existing patterns that Haijun simply preserved when rewriting a file
 - Vulnerabilities in the ORIGINAL/STARTER code that the developer was given to work with. If a file was fully rewritten (all lines show as - then +), compare the + content against the - content. Only flag NEWLY INTRODUCED patterns that did NOT exist in the - lines.
 - Issues OUTSIDE THE SCOPE of what the developer was asked to do
 
@@ -1735,7 +1727,7 @@ Respond with JSON."""
     }
 
     prompt += extensibility.guidance_block()
-    analysis = _call_claude_dual_or(prompt, output_schema,
+    analysis = _call_haijun_dual_or(prompt, output_schema,
                                     bool_key="hasConcerns",
                                     list_key="concerns")
     if not analysis or not analysis.get("hasConcerns") or not analysis.get("concerns"):

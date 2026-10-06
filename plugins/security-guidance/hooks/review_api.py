@@ -161,8 +161,7 @@ def build_investigate_prompt(
 ) -> str:
     capped, _ = cap_diff_for_prompt(diff_files)
     diff_text = "\n\n".join(
-        f"=== DIFF: {fp} ===\n{content}" for fp, content in capped
-    )
+        f"=== DIFF: {fp} ===\n{content}" for fp, content in capped )
     return (
         "Review this change for security vulnerabilities.\n\n"
         "Changed files (you may Read these and any other file in the repo):\n"
@@ -254,7 +253,7 @@ def build_refute_prompt(candidates: list[dict[str, Any]], diff_text: str) -> str
         "victim); data-exposure findings (CWE-200/359/532, secrets-"
         "in-logs — the question is who READS the sink, not who "
         "controls the input); project-working-directory config "
-        "(.claude/settings, .vscode/, package.json scripts — repo "
+        "(.haijun/settings, .vscode/, package.json scripts — repo "
         "author ≠ repo cloner); cross-process metadata sources "
         "(psutil.Process(...), /proc/<pid>/* — different process "
         "owner is a different principal).\n"
@@ -289,8 +288,7 @@ def build_refute_prompt(candidates: list[dict[str, Any]], diff_text: str) -> str
 
 
 def tag_diff_anchor(
-    candidates: list[dict[str, Any]], diff_text: str
-) -> list[dict[str, Any]]:
+    candidates: list[dict[str, Any]], diff_text: str ) -> list[dict[str, Any]]:
     """SOFT diff-intersect: tag each candidate ``_diff_anchor: "in_diff" |
     "off_diff"`` and sort in_diff first; do NOT drop.
 
@@ -348,8 +346,7 @@ _SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 
 
 def filter_by_severity(
-    findings: list[dict[str, Any]], *, include_medium: bool = True
-) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]], *, include_medium: bool = True ) -> list[dict[str, Any]]:
     """Medium-included is the validated default; the model's investigate-stage
     severity is conservative and dropping mediums before self-refute filters
     out most real findings.
@@ -366,7 +363,7 @@ def filter_by_severity(
 
 
 def format_findings(findings: list[dict[str, Any]]) -> str:
-    """Render findings as the same text block the CC plugin emits to Claude."""
+    """Render findings as the same text block the CC plugin emits to Haijun."""
     by_file: dict[str, list[dict[str, Any]]] = {}
     for v in findings:
         by_file.setdefault(v.get("filePath", "unknown"), []).append(v)
