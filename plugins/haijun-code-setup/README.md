@@ -26,4 +26,4 @@ This track is **read-only** - it analyzes but doesn't modify files.
 
 ## Author
 
-Isabella He (isabella@Takebox AI.com)
+Isabella He (isabella@haijun.my.id)

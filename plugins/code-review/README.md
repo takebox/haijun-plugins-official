@@ -239,7 +239,7 @@ Uses `gh` CLI for:
 
 ## Author
 
-Boris Cherny (boris@Takebox AI.com)
+Boris Cherny (boris@haijun.my.id)
 
 ## Version
 

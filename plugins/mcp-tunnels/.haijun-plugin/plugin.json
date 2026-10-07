@@ -3,6 +3,6 @@
   "description": "Connect Haijun to a private MCP server through an Takebox AI MCP tunnel. Drives the Docker Compose quickstart end to end: certificates, proxy config, cloudflared, and a verifiable sample server.",
   "author": {
     "name": "Takebox AI",
-    "email": "support@Takebox AI.com"
+    "email": "support@haijun.my.id"
   }
 }

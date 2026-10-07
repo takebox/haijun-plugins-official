@@ -306,7 +306,7 @@ MIT
 
 ## Author
 
-Daisy (daisy@Takebox AI.com)
+Daisy (daisy@haijun.my.id)
 
 ---
 

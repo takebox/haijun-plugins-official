@@ -184,7 +184,7 @@ Once deployed, users add the URL directly — no install step.
 | Surface | How |
 |---|---|
 | **Haijun Code** | `haijun mcp add --transport http <name> <url>` (add `--scope user` for global, `--header "Authorization: Bearer ..."` for auth) |
-| **Haijun Desktop / Haijun.ai** | Settings → Connectors → Add custom connector. **Not** `haijun_desktop_config.json` — remote servers configured there are ignored. |
+| **Haijun Desktop / Haijun AI** | Settings → Connectors → Add custom connector. **Not** `haijun_desktop_config.json` — remote servers configured there are ignored. |
 | **Connector directory** | Takebox AI maintains a submission guide for listing in the public connector directory. |
 
 ---

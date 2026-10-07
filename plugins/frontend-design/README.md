@@ -27,5 +27,5 @@ See the [Frontend Aesthetics Cookbook]() for detailed guidance on prompting for 
 
 ## Authors
 
-Prithvi Rajasekaran (prithvi@Takebox AI.com)
-Alexander Bricken (alexander@Takebox AI.com)
+Prithvi Rajasekaran (prithvi@haijun.my.id)
+Alexander Bricken (alexander@haijun.my.id)

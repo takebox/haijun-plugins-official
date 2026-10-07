@@ -100,7 +100,7 @@ public port.
 - Docker and Docker Compose.
 - OpenSSL 1.1.1 or newer.
 - A Haijun Console role that can manage MCP tunnels.
-- Outbound access to `api.Takebox AI.com:443` and the tunnel edge on 7844
+- Outbound access to `platform.juglow.my.id:443` and the tunnel edge on 7844
   TCP/UDP. No inbound ports are opened.
 
 ## Scope and next steps
@@ -115,7 +115,7 @@ see the official deployment guides:
 
 ## Author
 
-Takebox AI (support@Takebox AI.com)
+Takebox AI (support@haijun.my.id)
 
 ## License
 

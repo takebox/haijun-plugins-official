@@ -10,7 +10,7 @@ An MCP app is a standard MCP server that **also serves UI resources** — intera
 
 The UI layer is **additive**. Under the hood it's still tools, resources, and the same wire protocol. If you haven't built a plain MCP server before, the `build-mcp-server` track covers the base layer. This track adds widgets on top.
 
-> **Testing in Haijun:** Add the server as a custom connector in haijun.ai (via a Cloudflare tunnel for local dev) — this exercises the real iframe sandbox and `hostContext`. See https://haijun.my.id/docs/connectors/building/testing.
+> **Testing in Haijun:** Add the server as a custom connector in Haijun AI (via a Cloudflare tunnel for local dev) — this exercises the real iframe sandbox and `hostContext`. See https://haijun.my.id/docs/connectors/building/testing.
 
 ## Haijun host specifics
 

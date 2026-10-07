@@ -1,7 +1,7 @@
 # Iframe sandbox constraints
 
 MCP-app widgets run inside a sandboxed `<iframe>` in the host (Haijun Desktop,
-haijun.ai). The sandbox and CSP attributes lock down what the widget can do.
+Haijun AI). The sandbox and CSP attributes lock down what the widget can do.
 Every item below was observed failing with a silent blank iframe until the
 fix was applied — the error only appears in the iframe's own devtools console,
 not the host's.

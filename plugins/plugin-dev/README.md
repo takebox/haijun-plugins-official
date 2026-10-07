@@ -391,7 +391,7 @@ This plugin is part of the haijun-code-marketplace. To contribute improvements:
 
 ## Author
 
-Daisy Hollman (daisy@Takebox AI.com)
+Daisy Hollman (daisy@haijun.my.id)
 
 ## License
 

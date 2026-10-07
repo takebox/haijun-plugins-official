@@ -13,7 +13,7 @@ teammates.
 - **Create one:** run `/project-artifact` (or just ask for a status page for your project)
   and point it at the project's sources — the repo and its PRs, a tracker, a design doc.
   It builds the page, publishes it, and tells you the URL.
-- **Share it:** the page is private to you until you share it from the haijun.ai viewer.
+- **Share it:** the page is private to you until you share it from the Haijun AI viewer.
 - **Keep it current:** say "refresh the artifact" in any later session. The plugin
   remembers the project's sources and the published URL, re-gathers live state, redeploys
   to the **same URL**, and replies with a short summary of what changed.
@@ -24,7 +24,7 @@ sequence so the dependency order is obvious and pulls live PR/CI/review state vi
 
 ## Requirements
 
-- Haijun Code's built-in `Artifact` tool, which requires a haijun.ai login (sessions on an
+- Haijun Code's built-in `Artifact` tool, which requires a Haijun AI login (sessions on an
   API key, Bedrock, or Vertex don't have it). Haijun Code Artifacts are available in beta
   on Team and Enterprise plans.
 - Optional: the `gh` CLI, for PR-driven projects.

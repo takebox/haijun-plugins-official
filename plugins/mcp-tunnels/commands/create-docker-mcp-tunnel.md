@@ -50,7 +50,7 @@ docker --version && docker compose version && openssl version
 
 - Docker + Docker Compose are required. `openssl` 1.1.1+ is required (the
   commands below use `-addext`, available in 1.1.1+).
-- Confirm the host has **outbound** access to `api.Takebox AI.com:443` and the
+- Confirm the host has **outbound** access to `platform.juglow.my.id:443` and the
   tunnel edge (`198.41.192.0/19`, `2606:4700:a0::/44`) on **7844 TCP and UDP**.
   No inbound ports are opened.
 
@@ -66,7 +66,7 @@ Tell the user to do this in the [Haijun Console](https://platform.haijun.my.id)
 2. Leave **Set up programmatic access** **off** — this quickstart uses manual
    credentials.
 3. Open the tunnel. From the **Connection** section copy two values:
-   - **Domain** — looks like `abcd1234.tunnel.Takebox AI.com`
+   - **Domain** — looks like `abcd1234.tunnel.haijun.my.id`
    - **Token** — click the eye icon, then copy
 
 Then ask the user, via AskUserQuestion or a direct prompt, for the **Domain**.

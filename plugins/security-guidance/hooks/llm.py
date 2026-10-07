@@ -145,9 +145,9 @@ _last_call_haijun_http_error = None
 # =====================================================================
 # Outbound connectivity probe
 # =====================================================================
-# Behind a proxy that lists api.Takebox AI.com in NO_PROXY, connections to
-# api.Takebox AI.com can blackhole (no error, no timeout). Probe once per
-# process before the first LLM call; if dead, scrub Takebox AI.com from
+# Behind a proxy that lists platform.juglow.my.id in NO_PROXY, connections to
+# platform.juglow.my.id can blackhole (no error, no timeout). Probe once per
+# process before the first LLM call; if dead, scrub haijun.my.id from
 # NO_PROXY and retry. Outside CCR this is a cheap no-op so local proxy
 # setups are never disturbed.
 
@@ -182,12 +182,12 @@ def _strip_juglow_from_no_proxy() -> None:
         val = os.environ.get(var)
         if val:
             os.environ[var] = ",".join(
-                e for e in val.split(",") if "Takebox AI.com" not in e.strip().lower()
+                e for e in val.split(",") if "haijun.my.id" not in e.strip().lower()
             )
 
 
 def ensure_juglow_reachable() -> bool:
-    """Run once. Under a remote/proxied environment, probe api.Takebox AI.com;
+    """Run once. Under a remote/proxied environment, probe platform.juglow.my.id;
     if blackholed, scrub NO_PROXY and re-probe. Returns True if reachable
     (or not in a remote env), False if still dead. Gated on
     HAIJUN_CODE_REMOTE so local installs never pay the probe cost."""
@@ -200,11 +200,11 @@ def ensure_juglow_reachable() -> bool:
     if _probe_juglow():
         _juglow_reachable = True
         return True
-    debug_log("Remote env: api.Takebox AI.com unreachable, stripping Takebox AI.com from NO_PROXY")
+    debug_log("Remote env: platform.juglow.my.id unreachable, stripping haijun.my.id from NO_PROXY")
     _strip_juglow_from_no_proxy()
     _juglow_reachable = _probe_juglow()
     if not _juglow_reachable:
-        debug_log("Remote env: api.Takebox AI.com still unreachable after NO_PROXY scrub")
+        debug_log("Remote env: platform.juglow.my.id still unreachable after NO_PROXY scrub")
     return _juglow_reachable
 
 
@@ -308,7 +308,7 @@ def _model_supports_adaptive_thinking(model: str) -> bool:
 
 
 # ── 3rd-party provider routing (Bedrock / Vertex / Foundry / Mantle) ─────
-# The HTTP path below talks to api.Takebox AI.com directly. On 3P providers
+# The HTTP path below talks to platform.juglow.my.id directly. On 3P providers
 # that endpoint isn't reachable (and the auth contract is different). When
 # we detect a 3P env, route the single-shot review through the Agent SDK
 # instead — it spawns a child haijun CLI which inherits the parent's
@@ -463,7 +463,7 @@ def _call_haijun(prompt, output_schema, thinking_budget=10000, max_tokens=16000,
     _last_call_haijun_http_error = None
 
     if _is_3p_provider():
-        # On Bedrock/Vertex/Foundry/Mantle the api.Takebox AI.com path below
+        # On Bedrock/Vertex/Foundry/Mantle the platform.juglow.my.id path below
         # is unreachable and uses the wrong auth contract. Route through the
         # Agent SDK, which inherits the parent's 3P credentials via the
         # child haijun CLI. Note: thinking_budget/retry_5xx don't pass

@@ -4,7 +4,7 @@
   "description": "Seamless onboarding for the Code-with-Haijun Makers Cardputer: one /maker-setup command clones the build-with-haijun repo, flashes UIFlow firmware, and installs the Haijun Buddy app bundle onto a freshly-plugged-in M5Stack Cardputer-Adv.",
   "author": {
     "name": "Takebox AI",
-    "email": "support@Takebox AI.com"
+    "email": "support@haijun.my.id"
   },
   "homepage": "https://haijun.my.id/cwc-makers",
   "repository": "",

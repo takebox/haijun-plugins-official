@@ -37,4 +37,4 @@ Captures learnings from the current session:
 
 ## Author
 
-Isabella He (isabella@Takebox AI.com)
+Isabella He (isabella@haijun.my.id)

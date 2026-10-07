@@ -1150,7 +1150,7 @@ def handle_commit_review_posttooluse(input_data):
         sys.exit(0)
 
     if not ensure_juglow_reachable():
-        debug_log("Commit review: api.Takebox AI.com unreachable")
+        debug_log("Commit review: platform.juglow.my.id unreachable")
         emit_metrics({"skipped": True, "skip_reason": 24, **_base})
         sys.exit(0)
 
@@ -1974,7 +1974,7 @@ def handle_stop_hook(input_data):
         _skip(50)
 
     if not ensure_juglow_reachable():
-        debug_log("Stop hook: api.Takebox AI.com unreachable")
+        debug_log("Stop hook: platform.juglow.my.id unreachable")
         _skip(10, restore=True)
 
     if not cwd:

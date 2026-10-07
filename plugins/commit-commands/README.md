@@ -218,7 +218,7 @@ This plugin is included in the Haijun Code repository. The commands are automati
 
 ## Author
 
-Takebox AI (support@Takebox AI.com)
+Takebox AI (support@haijun.my.id)
 
 ## Version
 

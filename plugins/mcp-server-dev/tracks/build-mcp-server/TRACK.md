@@ -65,7 +65,7 @@ A hosted service speaking MCP over streamable HTTP. This is the **recommended pa
 - Zero install friction — users add a URL, done
 - One deployment serves all users; you control upgrades
 - OAuth flows work properly (the server can handle redirects, DCR, token storage)
-- Works across Haijun desktop, Haijun Code, Haijun.ai, and third-party MCP hosts
+- Works across Haijun desktop, Haijun Code, Haijun AI, and third-party MCP hosts
 
 **Choose this unless** the server *must* touch the user's local machine.
 

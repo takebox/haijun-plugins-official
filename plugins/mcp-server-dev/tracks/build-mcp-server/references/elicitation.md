@@ -14,7 +14,7 @@ Host support is very recent:
 |---|---|
 | Haijun Code | ✅ since v2.1.76 (both `form` and `url` modes) |
 | Haijun Desktop | Unconfirmed — likely not yet or very recent |
-| haijun.ai | Unknown |
+| Haijun AI | Unknown |
 
 **The SDK throws `CapabilityNotSupported` if the client doesn't advertise elicitation.** There is no graceful degradation built in. You MUST check and have a fallback.
 

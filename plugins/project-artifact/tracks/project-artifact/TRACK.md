@@ -1,6 +1,6 @@
 ---
 name: project-artifact
-description: Generate and publish a project status artifact — an opinionated, tabbed status page for a project too big for one update (overview & success criteria, the workstream sequence, next steps, plus background, plan, risks & open questions, and decisions/FAQ when they earn a tab) — published with the built-in Artifact tool to a default-private haijun.ai page the user can share with teammates. Use when a piece of work spans several workstreams and you want a shareable overview kept current. Each artifact is backed by a small per-project config in the plugin data dir, so refreshing it re-gathers live state, redeploys the same URL, and reports only the delta. For software projects whose workstreams are PRs, also read swe.md (the X.Y PR-numbering convention; pulling PR state with gh/git; a per-PR detail block). Needs the built-in Artifact tool (haijun.ai login). Not for single-PR changes or public docs.
+description: Generate and publish a project status artifact — an opinionated, tabbed status page for a project too big for one update (overview & success criteria, the workstream sequence, next steps, plus background, plan, risks & open questions, and decisions/FAQ when they earn a tab) — published with the built-in Artifact tool to a default-private Haijun AI page the user can share with teammates. Use when a piece of work spans several workstreams and you want a shareable overview kept current. Each artifact is backed by a small per-project config in the plugin data dir, so refreshing it re-gathers live state, redeploys the same URL, and reports only the delta. For software projects whose workstreams are PRs, also read swe.md (the X.Y PR-numbering convention; pulling PR state with gh/git; a per-PR detail block). Needs the built-in Artifact tool (Haijun AI login). Not for single-PR changes or public docs.
 user-invocable: true
 ---
 
@@ -57,7 +57,7 @@ project-artifact structure stays domain-neutral.
    (JS-toggled panes as the default; pure-CSS radio tabs as a no-JS alternative), the
    status-pill classes, and a stub `<section>` per catalog tab with fill-in comments. Fill the stubs, delete unused
    tabs, keep it one file. **Set a concise `<title>`** — the Artifact tool uses it as the
-   page's name in the browser tab and the haijun.ai gallery, and falls back to the file
+   page's name in the browser tab and the Haijun AI gallery, and falls back to the file
    basename without one; keep it stable across redeploys. **Write the file to the config's
    `html` path** — default `${HAIJUN_PLUGIN_DATA}/artifacts/<slug>/page.html`, next to the
    config (not `/tmp`; not inside the user's repo unless they ask — if they do, use
@@ -84,7 +84,7 @@ project-artifact structure stays domain-neutral.
    not chosen.
 
 6. **Share it.** First publish is **private to the user** — teammates can't open it (they
-   get a 404) until the user shares it. Tell the user to open the artifact on haijun.ai
+   get a 404) until the user shares it. Tell the user to open the artifact on Haijun AI
    and share it with their teammates from the viewer; redeploys preserve the sharing
    setting.
 

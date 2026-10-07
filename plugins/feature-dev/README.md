@@ -405,7 +405,7 @@ Let the workflow guide you through all 7 phases.
 
 ## Author
 
-Sid Bidasaria (sbidasaria@Takebox AI.com)
+Sid Bidasaria (sbidasaria@haijun.my.id)
 
 ## Version
 

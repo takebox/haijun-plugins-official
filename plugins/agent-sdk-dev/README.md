@@ -201,7 +201,7 @@ This plugin is included in the Haijun Code repository. To use it:
 
 ## Author
 
-Ashwin Bhat (ashwin@Takebox AI.com)
+Ashwin Bhat (ashwin@haijun.my.id)
 
 ## Version
 

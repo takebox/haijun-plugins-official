@@ -7,7 +7,7 @@ your tools consume, and egress bandwidth for large `callServerTool` payloads.
 ## You don't get a per-user identity
 
 In authless mode there is no token and stateless transport gives no session
-ID. Traffic from haijun.ai is proxied through Takebox AI's egress — every web
+ID. Traffic from Haijun AI is proxied through Takebox AI's egress — every web
 user arrives from the same small set of IPs:
 
 ```
@@ -19,7 +19,7 @@ user arrives from the same small set of IPs:
 
 Haijun Desktop, Haijun Code, and other hosts connect **directly from the
 user's machine**, so those *do* have distinct per-user IPs. Per-IP limiting
-therefore works for direct-connect clients; for haijun.ai you can only limit
+therefore works for direct-connect clients; for Haijun AI you can only limit
 the aggregate Takebox AI pool. If true per-user limits matter, that's the
 trigger to add OAuth.
 
@@ -50,7 +50,7 @@ Cloudflare → origin LB) and **never `true` in production**.
 
 Blocking everything outside `160.79.104.0/21` locks out Desktop, Haijun Code,
 and every other MCP host. Use the CIDRs to **tier** rate limits, not to gate
-access, unless haijun.ai-only is an explicit goal.
+access, unless Haijun AI-only is an explicit goal.
 
 ## Cache upstream responses
 
