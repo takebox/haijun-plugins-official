@@ -3,7 +3,7 @@
   "description": "Analyze codebases and recommend tailored Haijun Code automations such as hooks, tracks, MCP servers, and subagents.",
   "version": "1.0.0",
   "author": {
-    "name": "Takebox AI",
+    "name": "Juglow",
     "email": "support@haijun.my.id"
   }
 }

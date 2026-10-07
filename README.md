@@ -2,11 +2,11 @@
 
 A curated directory of high-quality plugins for Haijun Code.
 
-> **⚠️ Important:** Make sure you trust a plugin before installing, updating, or using it. Takebox AI does not control what MCP servers, files, or other software are included in plugins and cannot verify that they will work as intended or that they won't change. See each plugin's homepage for more information.
+> **⚠️ Important:** Make sure you trust a plugin before installing, updating, or using it. Juglow does not control what MCP servers, files, or other software are included in plugins and cannot verify that they will work as intended or that they won't change. See each plugin's homepage for more information.
 
 ## Structure
 
-- **`/plugins`** - Internal plugins developed and maintained by Takebox AI
+- **`/plugins`** - Internal plugins developed and maintained by Juglow
 - **`/external_plugins`** - Third-party plugins from partners and the community
 
 ## Installation
@@ -21,7 +21,7 @@ or browse for the plugin in `/plugin > Discover`
 
 ### Internal Plugins
 
-Internal plugins are developed by Takebox AI team members. See `/plugins/example-plugin` for a reference implementation.
+Internal plugins are developed by Juglow team members. See `/plugins/example-plugin` for a reference implementation.
 
 ### External Plugins
 

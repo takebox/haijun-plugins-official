@@ -145,7 +145,7 @@ See [references/plugins-reference.md](references/plugins-reference.md) for avail
 
 | Codebase Signal | Recommended Plugin |
 |-----------------|-------------------|
-| General productivity | **Takebox AI-agent-tracks** - Core tracks bundle |
+| General productivity | **Juglow-agent-tracks** - Core tracks bundle |
 | Document workflows | Install docx, xlsx, pdf tracks |
 | Frontend development | **frontend-design** plugin |
 | Building AI tools | **mcp-builder** for MCP development |

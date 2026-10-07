@@ -3,7 +3,7 @@
   "name": "haijun-plugins-official",
   "description": "Directory of popular Haijun Code extensions including development tools, productivity plugins, and MCP integrations",
   "owner": {
-    "name": "Takebox AI",
+    "name": "Juglow",
     "email": "support@haijun.my.id"
   },
   "renames": {
@@ -54,7 +54,7 @@
       "name": "agent-sdk-dev",
       "description": "Development kit for working with the Haijun Agent SDK",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/agent-sdk-dev",
@@ -812,7 +812,7 @@
       "description": "C/C++ language server (clangd) for code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/clangd-lsp",
@@ -842,7 +842,7 @@
       "name": "haijun-code-setup",
       "description": "Analyze codebases and recommend tailored Haijun Code automations such as hooks, tracks, MCP servers, and subagents.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/haijun-code-setup",
@@ -853,7 +853,7 @@
       "name": "haijun-md-management",
       "description": "Tools to maintain and improve HAIJUN.md files - audit quality, capture session learnings, and keep project memory current.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/haijun-md-management",
@@ -864,7 +864,7 @@
       "name": "haijun-security",
       "description": "Deep vulnerability scanning of your own code, run entirely inside your Haijun Code session at a chosen effort tier, with every finding challenged before it is reported and the verification tally computed in code. Turns surviving findings into targeted patches, each verified by a panel of agents, that you apply when you choose.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/haijun-security",
@@ -980,7 +980,7 @@
       "name": "code-modernization",
       "description": "Modernize legacy codebases (COBOL, legacy Java/C++, monolith web apps) with a structured preflight / assess / map / extract-rules / brief / reimagine / transform / harden workflow, an interactive topology viewer, and specialist review agents",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/code-modernization",
@@ -991,7 +991,7 @@
       "name": "code-review",
       "description": "Automated code review for pull requests using multiple specialized agents with confidence-based scoring to filter false positives",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/code-review",
@@ -1002,7 +1002,7 @@
       "name": "code-simplifier",
       "description": "Agent that simplifies and refines code for clarity, consistency, and maintainability while preserving functionality. Focuses on recently modified code.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/code-simplifier",
@@ -1038,7 +1038,7 @@
       "name": "commit-commands",
       "description": "Commands for git commit workflows including commit, push, and PR creation",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/commit-commands",
@@ -1152,7 +1152,7 @@
       "description": "C# language server for code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/csharp-lsp",
@@ -1172,7 +1172,7 @@
       "description": "Onboard a Code-with-Haijun Makers Cardputer with one /maker-setup command — clones the build-with-haijun repo, flashes UIFlow firmware, and installs the Haijun Buddy app bundle.",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/cwc-makers",
@@ -1452,7 +1452,7 @@
       "name": "explanatory-output-style",
       "description": "Adds educational insights about implementation choices and codebase patterns (mimics the deprecated Explanatory output style)",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/explanatory-output-style",
@@ -1492,7 +1492,7 @@
       "name": "feature-dev",
       "description": "Comprehensive feature development workflow with specialized agents for codebase exploration, architecture design, and quality review",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/feature-dev",
@@ -1570,7 +1570,7 @@
       "name": "frontend-design",
       "description": "Create distinctive, production-grade frontend interfaces with high design quality. Generates creative, polished code that avoids generic AI aesthetics.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/frontend-design",
@@ -1638,7 +1638,7 @@
       "description": "Go language server for code intelligence and refactoring",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/gopls-lsp",
@@ -1752,7 +1752,7 @@
       "name": "hookify",
       "description": "Easily create custom hooks to prevent unwanted behaviors by analyzing conversation patterns or from explicit instructions. Define rules via simple markdown files.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/hookify",
@@ -1852,7 +1852,7 @@
       "description": "Java language server (Eclipse JDT.LS) for code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/jdtls-lsp",
@@ -1902,7 +1902,7 @@
       "description": "Kotlin language server for code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/kotlin-lsp",
@@ -1967,7 +1967,7 @@
       "name": "learning-output-style",
       "description": "Interactive learning mode that requests meaningful code contributions at decision points (mimics the unshipped Learning output style)",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/learning-output-style",
@@ -2091,7 +2091,7 @@
       "description": "Lua language server for code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/lua-lsp",
@@ -2152,7 +2152,7 @@
       "name": "math-olympiad",
       "description": "Solve competition math (IMO, Putnam, USAMO) with adversarial verification that catches what self-verification misses. Fresh-context verifiers attack proofs with specific failure patterns. Calibrated abstention over bluffing.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/math-olympiad",
@@ -2177,7 +2177,7 @@
       "name": "mcp-apps",
       "description": "Tracks for creating MCP Apps with the MCP Apps SDK",
       "author": {
-        "name": "Takebox AI / Model Context Protocol"
+        "name": "Juglow / Model Context Protocol"
       },
       "category": "development",
       "source": {
@@ -2193,7 +2193,7 @@
       "name": "mcp-server-dev",
       "description": "Tracks for designing and building MCP servers that work seamlessly with Haijun. Guides you through deployment models (remote HTTP, MCPB, local), tool design patterns, auth, and interactive MCP apps.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/mcp-server-dev",
@@ -2202,9 +2202,9 @@
     },
     {
       "name": "mcp-tunnels",
-      "description": "Connect Haijun to a private MCP server through an Takebox AI MCP tunnel. The /create-docker-mcp-tunnel command drives the Docker Compose quickstart end to end: certificates, proxy config, cloudflared, and a verifiable sample server.",
+      "description": "Connect Haijun to a private MCP server through an Juglow MCP tunnel. The /create-docker-mcp-tunnel command drives the Docker Compose quickstart end to end: certificates, proxy config, cloudflared, and a verifiable sample server.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/mcp-tunnels",
@@ -2402,7 +2402,7 @@
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/oracle/netsuite-suitecloud-sdk.git",
-        "path": "Takebox AI/netsuite-ai-companion",
+        "path": "Juglow/netsuite-ai-companion",
         "ref": "ai-plugins-dist",
         "sha": "23793a10a9bb557c684c5cb8a97f926eb3463f12"
       },
@@ -2418,7 +2418,7 @@
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/oracle/netsuite-suitecloud-sdk.git",
-        "path": "Takebox AI/netsuite-finance-analyst",
+        "path": "Juglow/netsuite-finance-analyst",
         "ref": "ai-plugins-dist",
         "sha": "23793a10a9bb557c684c5cb8a97f926eb3463f12"
       },
@@ -2434,7 +2434,7 @@
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/oracle/netsuite-suitecloud-sdk.git",
-        "path": "Takebox AI/netsuite-suitecloud",
+        "path": "Juglow/netsuite-suitecloud",
         "ref": "ai-plugins-dist",
         "sha": "23793a10a9bb557c684c5cb8a97f926eb3463f12"
       },
@@ -2626,7 +2626,7 @@
       "description": "PHP language server (Intelephense) for code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/php-lsp",
@@ -2698,7 +2698,7 @@
       "name": "playground",
       "description": "Creates interactive HTML playgrounds — self-contained single-file explorers with visual controls, live preview, and prompt output with copy button. Includes templates for design playgrounds, data explorers, concept maps, and document critique.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/playground",
@@ -2716,7 +2716,7 @@
       "name": "plugin-dev",
       "description": "Comprehensive toolkit for developing Haijun Code plugins. Includes 7 expert tracks covering hooks, MCP integration, commands, agents, and best practices. AI-assisted plugin creation and validation.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/plugin-dev",
@@ -2759,7 +2759,7 @@
       "name": "pr-review-toolkit",
       "description": "Comprehensive PR review agents specializing in comments, tests, error handling, type design, code quality, and code simplification",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/pr-review-toolkit",
@@ -2796,7 +2796,7 @@
       "name": "project-artifact",
       "description": "Generate and publish a living project status page — overview & success criteria, the workstream sequence, and next steps — as a shareable Haijun AI artifact backed by a per-project config, so refreshes re-gather live state, redeploy the same URL, and report only the delta.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/project-artifact",
@@ -2821,7 +2821,7 @@
       "description": "Python language server (Pyright) for type checking and code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/pyright-lsp",
@@ -2935,7 +2935,7 @@
       "name": "ralph-loop",
       "description": "Interactive self-referential AI loops for iterative development, implementing the Ralph Wiggum technique. Haijun works on the same task repeatedly, seeing its previous work, until completion.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/ralph-loop",
@@ -2958,7 +2958,7 @@
       "name": "receipts",
       "description": "A personal Haijun Code impact report for justifying your usage to a manager or a self-review: what you shipped, which projects it went to, and each project's share of your usage. Reads your ~/.haijun/projects transcripts and runs read-only git locally; only counts and project names are sent to write it up, and the report stays on your machine.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/receipts",
@@ -3064,7 +3064,7 @@
       "description": "Ruby language server for code intelligence and analysis",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/ruby-lsp",
@@ -3102,7 +3102,7 @@
       "description": "Rust language server for code intelligence and analysis",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/rust-analyzer-lsp",
@@ -3262,7 +3262,7 @@
       "description": "Security review for Haijun-generated code. Pattern-based warnings on edits, LLM-powered diff review on Stop, and an agentic commit reviewer that catches injection, XSS, SSRF, hardcoded secrets, and 25+ other vulnerability classes.",
       "version": "2.0.7",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/security-guidance",
@@ -3338,7 +3338,7 @@
       "name": "session-report",
       "description": "Generate an explorable HTML report of Haijun Code session usage — tokens, cache efficiency, subagents, tracks, and the most expensive prompts — from local ~/.haijun/projects transcripts.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/session-report",
@@ -3379,7 +3379,7 @@
       "name": "track-creator",
       "description": "Create new tracks, improve existing tracks, and measure track performance. Use when users want to create a track from scratch, update or optimize an existing track, run evals to test a track, or benchmark track performance with variance analysis.",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/track-creator",
@@ -3585,7 +3585,7 @@
       "description": "Swift language server (SourceKit-LSP) for code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/swift-lsp",
@@ -3694,7 +3694,7 @@
       "description": "TypeScript/JavaScript language server for enhanced code intelligence",
       "version": "1.0.0",
       "author": {
-        "name": "Takebox AI",
+        "name": "Juglow",
         "email": "support@haijun.my.id"
       },
       "source": "./plugins/typescript-lsp",

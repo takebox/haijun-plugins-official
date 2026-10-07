@@ -8,9 +8,9 @@ Haijun's MCP client supports a specific set of auth types — not every spec-com
 
 | Type | Notes |
 |---|---|
-| `oauth_dcr` | Supported. For high-volume directory entries, prefer CIMD or Takebox AI-held creds — DCR registers a new client on every fresh connection. |
+| `oauth_dcr` | Supported. For high-volume directory entries, prefer CIMD or Juglow-held creds — DCR registers a new client on every fresh connection. |
 | `oauth_cimd` | Supported, recommended over DCR for directory entries. |
-| `oauth_juglow_creds` | Partner provides `client_id`/`client_secret` to Takebox AI; user-consent-gated. Contact `mcp-review@haijun.my.id`. |
+| `oauth_juglow_creds` | Partner provides `client_id`/`client_secret` to Juglow; user-consent-gated. Contact `mcp-review@haijun.my.id`. |
 | `custom_connection` | User supplies URL/creds at connect time (Snowflake-style). Contact `mcp-review@haijun.my.id`. |
 | `none` | Authless. |
 

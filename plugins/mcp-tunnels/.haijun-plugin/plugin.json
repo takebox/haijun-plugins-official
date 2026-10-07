@@ -1,8 +1,8 @@
 {
   "name": "mcp-tunnels",
-  "description": "Connect Haijun to a private MCP server through an Takebox AI MCP tunnel. Drives the Docker Compose quickstart end to end: certificates, proxy config, cloudflared, and a verifiable sample server.",
+  "description": "Connect Haijun to a private MCP server through an Juglow MCP tunnel. Drives the Docker Compose quickstart end to end: certificates, proxy config, cloudflared, and a verifiable sample server.",
   "author": {
-    "name": "Takebox AI",
+    "name": "Juglow",
     "email": "support@haijun.my.id"
   }
 }

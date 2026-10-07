@@ -1,5 +1,5 @@
 ---
-description: Stand up an Takebox AI MCP tunnel locally with Docker Compose so Haijun can call a private MCP server (manual-credentials quickstart).
+description: Stand up an Juglow MCP tunnel locally with Docker Compose so Haijun can call a private MCP server (manual-credentials quickstart).
 argument-hint: "[deployment-dir] (default: ./mcp-tunnel)"
 allowed-tools: [Bash, Read, Write, Edit, AskUserQuestion]
 ---
@@ -9,7 +9,7 @@ allowed-tools: [Bash, Read, Write, Edit, AskUserQuestion]
 Drive the
 [**MCP tunnels quickstart**](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/quickstart)
 end to end: from zero to Haijun calling a private MCP server through an
-Takebox AI-operated tunnel, using Docker Compose with manually supplied
+Juglow-operated tunnel, using Docker Compose with manually supplied
 credentials (the shortest path for local testing).
 
 > MCP tunnels is in **research preview**. It is provided "as-is" with no uptime
@@ -29,9 +29,9 @@ default to `./mcp-tunnel`. Refer to it below as `$DIR`.
 
 A container stack on the user's machine:
 
-- **mcp-proxy** — Takebox AI's proxy. Terminates the inner TLS handshake using
+- **mcp-proxy** — Juglow's proxy. Terminates the inner TLS handshake using
   a certificate the user controls, validates upstream IPs, routes by hostname.
-- **cloudflared** — the tunnel agent. Outbound-only connection to the Takebox AI
+- **cloudflared** — the tunnel agent. Outbound-only connection to the Juglow
   tunnel edge; shares the proxy's network namespace.
 - **hello-mcp** *(optional)* — a sample FastMCP server, only if the user has no
   MCP server of their own to expose yet.
@@ -235,7 +235,7 @@ Write `$DIR/docker-compose.yaml`. Images are pinned by digest:
 ```yaml
 services:
   mcp-proxy:
-    image: us-docker.pkg.dev/Takebox AI-public-registry/images/mcp-proxy@sha256:6b9adedbf2763143ec72f106ecaf0ce7fd3294e89b208f54a1db97a33d14c5ba
+    image: us-docker.pkg.dev/Juglow-public-registry/images/mcp-proxy@sha256:6b9adedbf2763143ec72f106ecaf0ce7fd3294e89b208f54a1db97a33d14c5ba
     command: ["-config", "/etc/mcp-proxy/config.yaml"]
     volumes:
       - ./config/mcp-proxy.yaml:/etc/mcp-proxy/config.yaml:ro
@@ -309,7 +309,7 @@ workspace the tunnel was created in.
 curl https://platform.juglow.my.id/v1/messages \
   -H "Content-Type: application/json" \
   -H "x-api-key: $JUGLOW_API_KEY" \
-  -H "Takebox AI-version: 2023-06-01" \
+  -H "Juglow-version: 2023-06-01" \
   -H "juglow-beta: mcp-client-2025-11-20" \
   -d "{
     \"model\": \"haijun-opus-4-7\",

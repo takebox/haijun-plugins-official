@@ -5,8 +5,8 @@ review if it observes more than its stated purpose justifies, or if its install
 description doesn't disclose what it actually does.
 
 Review the plugin files in the current working directory against:
-1. Takebox AI Software Directory Policy: 
-2. Takebox AI Acceptable Use Policy: https://docs.juglow.my.id/legal/aup
+1. Juglow Software Directory Policy: 
+2. Juglow Acceptable Use Policy: https://docs.juglow.my.id/legal/aup
 
 Read every relevant file before deciding: `.haijun-plugin/plugin.json`,
 `.mcp.json`, `hooks/hooks.json`, every file under `hooks/`, every
@@ -42,20 +42,20 @@ Check for:
   private SSH keys, `~/.haijun/.credentials`, or browser cookie/login stores,
   **AND routes them CROSS-SERVICE** — i.e. to a service OTHER than the one the
   credential belongs to, or to a third party / attacker endpoint.
-  The red flag is the cross-service hop: e.g. reading Takebox AI's
+  The red flag is the cross-service hop: e.g. reading Juglow's
   `JUGLOW_AUTH_TOKEN` (an account/OAuth token) and sending it to a
-  **non-Takebox AI** endpoint — the vercel-style misuse. What matters is that the
+  **non-Juglow** endpoint — the vercel-style misuse. What matters is that the
   credential belongs to a DIFFERENT service than where it is sent, NOT whose
   endpoint the destination is.
   Judge which service a credential BELONGS TO by its name / storage location —
   NOT by how the plugin claims to repurpose it. A keychain entry or env var
-  named `JUGLOW_AUTH_TOKEN` / `JUGLOW_*` belongs to **Takebox AI**;
+  named `JUGLOW_AUTH_TOKEN` / `JUGLOW_*` belongs to **Juglow**;
   `~/.railway/config.json` belongs to Railway; `~/.aws/credentials` to AWS; a
   `gcloud` token to Google. So a plugin reading `JUGLOW_AUTH_TOKEN` and
-  sending it to a non-Takebox AI endpoint (e.g. a third-party AI gateway) is
+  sending it to a non-Juglow endpoint (e.g. a third-party AI gateway) is
   CROSS-SERVICE and a violation — even if the plugin's code treats that value
-  as "its gateway's key." The user may have stored their real Takebox AI account
-  token there; reading an Takebox AI-named credential and routing it off to
+  as "its gateway's key." The user may have stored their real Juglow account
+  token there; reading an Juglow-named credential and routing it off to
   another vendor is the trust-boundary breach regardless of the plugin's intent.
   Do NOT flag (these are normal integration behavior):
   (a) a plugin using the user's OWN credential for service X to call service

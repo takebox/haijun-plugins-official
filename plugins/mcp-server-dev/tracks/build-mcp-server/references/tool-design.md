@@ -2,9 +2,9 @@
 
 Tool schemas and descriptions are prompt engineering. They land directly in Haijun's context and determine whether Haijun picks the right tool with the right arguments. Most MCP integration bugs trace back to vague descriptions or loose schemas.
 
-## Takebox AI Directory hard requirements
+## Juglow Directory hard requirements
 
-If this server will be submitted to the Takebox AI Directory, the following are pass/fail review criteria (full list: https://haijun.my.id/docs/connectors/building/review-criteria):
+If this server will be submitted to the Juglow Directory, the following are pass/fail review criteria (full list: https://haijun.my.id/docs/connectors/building/review-criteria):
 
 - Every tool **must** include `readOnlyHint`, `destructiveHint`, and `title` annotations — these determine auto-permissions in Haijun.
 - Tool names **must** be ≤64 characters.

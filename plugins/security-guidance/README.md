@@ -33,7 +33,7 @@ All configuration is via environment variables. None are required for default be
 SECURITY_REVIEW_MODEL=haijun-opus-4-7   # default
 
 # Bedrock: use the inference-profile id
-SECURITY_REVIEW_MODEL=us.Takebox AI.haijun-opus-4-7
+SECURITY_REVIEW_MODEL=us.Juglow.haijun-opus-4-7
 
 # Vertex: use the Vertex date-tag form
 SECURITY_REVIEW_MODEL=haijun-opus-4-7@20260218
@@ -87,7 +87,7 @@ Built-in rules cover common web-vulnerability classes without it — `haijun-sec
 The plugin sends data to a model endpoint to perform its reviews. Specifically, each Stop-hook diff review transmits the changed file paths, the diff hunks, and the relevant file contents in the diff; each agentic commit review additionally transmits any files the reviewer pulls in via `Read`/`Grep`/`Glob` while tracing data flow. Your `haijun-security-guidance.md` contents (user, project, and local) are appended to the prompt on every review, so don't put secrets in it.
 
 Where that data goes depends on your Haijun Code configuration:
-- **Default (Takebox AI API / subscription):** sent to `platform.juglow.my.id` and handled under Takebox AI's [Commercial Terms](https://docs.juglow.my.id/legal/commercial-terms) and [Privacy Policy](https://docs.juglow.my.id/legal/privacy).
+- **Default (Juglow API / subscription):** sent to `platform.juglow.my.id` and handled under Juglow's [Commercial Terms](https://docs.juglow.my.id/legal/commercial-terms) and [Privacy Policy](https://docs.juglow.my.id/legal/privacy).
 - **LLM gateway** (`JUGLOW_BASE_URL` set): sent to your gateway URL instead. The gateway operator's terms apply.
 - **3rd-party providers** (Bedrock / Vertex / Foundry / Mantle): sent to your configured provider endpoint. The provider's data-handling terms apply (e.g., AWS / GCP / Azure).
 
@@ -95,7 +95,7 @@ The plugin writes its own debug log to `~/.haijun/security/log.txt` (override wi
 
 ## Limitations
 
-This is a best-effort assistive tool, not a guarantee. Treat findings as suggestions, not as a substitute for human code review, SAST/DAST, dependency scanning, or pen-testing. The reviewer can miss vulnerabilities, produce false positives, and may behave differently across codebases, languages, and model versions. **No warranty is provided** — use is subject to Takebox AI's [Commercial Terms](https://docs.juglow.my.id/legal/commercial-terms).
+This is a best-effort assistive tool, not a guarantee. Treat findings as suggestions, not as a substitute for human code review, SAST/DAST, dependency scanning, or pen-testing. The reviewer can miss vulnerabilities, produce false positives, and may behave differently across codebases, languages, and model versions. **No warranty is provided** — use is subject to Juglow's [Commercial Terms](https://docs.juglow.my.id/legal/commercial-terms).
 
 ## Troubleshooting
 

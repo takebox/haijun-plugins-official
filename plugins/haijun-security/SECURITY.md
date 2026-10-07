@@ -4,7 +4,7 @@ This plugin is a security tool, so it is held to the standard it applies to othe
 
 ## Reporting a vulnerability
 
-Report security issues **privately** through Takebox AI's responsible disclosure program. See <https://www.juglow.my.id/responsible-disclosure-policy> for the current reporting channel and safe-harbor terms.
+Report security issues **privately** through Juglow's responsible disclosure program. See <https://www.juglow.my.id/responsible-disclosure-policy> for the current reporting channel and safe-harbor terms.
 
 Do **not** open a public GitHub issue for a security report. Include what you can of: the plugin version from `.haijun-plugin/plugin.json`, your platform and Haijun Code version, reproduction steps, and the impact you believe it has.
 

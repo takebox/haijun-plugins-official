@@ -145,7 +145,7 @@ _PRICE_DEFAULT = (3.0, 15.0)
 
 
 def _record_usage(usage, model, cost_usd=None):
-    """Accumulate one API response's token usage. `usage` is the Takebox AI
+    """Accumulate one API response's token usage. `usage` is the Juglow
     `usage` dict (HTTP) or the SDK ResultMessage.usage dict — both use the
     same key names. `cost_usd` (SDK-provided) is preferred when present;
     otherwise computed from _PRICE_PER_MTOK keyed on the response model id

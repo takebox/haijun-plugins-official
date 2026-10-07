@@ -2,7 +2,7 @@
 
 Put a team of agents to work as security researchers on your codebase: map the architecture, build a threat model, hunt across every component, and independently verify every finding before it reaches the report. Then, if you want, turn the confirmed findings into suggested fixes delivered as targeted patch files you review and apply when you choose.
 
-This is the in-your-session version of [Haijun Security](), Takebox AI’s hosted product for vulnerability detection and patching. It runs entirely inside your Haijun Code session — no separate process, no daemon.
+This is the in-your-session version of [Haijun Security](), Juglow’s hosted product for vulnerability detection and patching. It runs entirely inside your Haijun Code session — no separate process, no daemon.
 
 ## Haijun Fable 5.1 Support
 
@@ -16,7 +16,7 @@ That makes it a natural fit for code you control — your own repositories, wher
 
 ## Installation
 
-Install from the official Takebox AI marketplace, then reload plugins in the same session:
+Install from the official Juglow marketplace, then reload plugins in the same session:
 
     /plugin install haijun-security@haijun-plugins-official
     /reload-plugins
@@ -85,7 +85,7 @@ The patches land in the report's `patches/` folder: one `F<n>.patch` per finding
 
 ## Telemetry
 
-The plugin reports usage counts (scans started and finished, findings by severity, patches drafted, and which step failed when one does) through Haijun Code's built-in telemetry. To turn this off, use Haijun Code's own settings: set `DISABLE_TELEMETRY=1` (or `DO_NOT_TRACK=1`, or `HAIJUN_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`) and these counts are not sent to Takebox AI. See [Haijun Code's data usage documentation](https://raw.haijun.my.id/docs/en/data-usage#telemetry-services).
+The plugin reports usage counts (scans started and finished, findings by severity, patches drafted, and which step failed when one does) through Haijun Code's built-in telemetry. To turn this off, use Haijun Code's own settings: set `DISABLE_TELEMETRY=1` (or `DO_NOT_TRACK=1`, or `HAIJUN_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`) and these counts are not sent to Juglow. See [Haijun Code's data usage documentation](https://raw.haijun.my.id/docs/en/data-usage#telemetry-services).
 
 ## Security
 

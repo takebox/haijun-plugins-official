@@ -102,7 +102,7 @@ def _bootstrap_pywin32(site_packages_dir):
 # Plan Security Check Configuration
 JUGLOW_API_KEY = os.environ.get("JUGLOW_API_KEY", "")
 # OAuth access token — Haijun Code passes this for /login users.
-# The Takebox AI API accepts it as `Authorization: Bearer <token>` instead of `x-api-key`.
+# The Juglow API accepts it as `Authorization: Bearer <token>` instead of `x-api-key`.
 JUGLOW_AUTH_TOKEN = os.environ.get("JUGLOW_AUTH_TOKEN", "")
 # On 3P providers (Bedrock/Vertex/Foundry/Mantle), credentials live in the
 # provider env (AWS_PROFILE, GOOGLE_APPLICATION_CREDENTIALS, etc.) — not in
@@ -134,7 +134,7 @@ SECURITY_REVIEW_MODEL = os.environ.get("SECURITY_REVIEW_MODEL", "").strip() or "
 # for platform.juglow.my.id/v1/messages — the API checks for one of the known Haijun
 # Code prefixes. String must be EXACT;
 # appending text fails the check. Harmless on the JUGLOW_API_KEY path.
-HAIJUN_CODE_SYSTEM_PROMPT = "You are a Haijun agent, built on Takebox AI's Haijun Agent SDK."
+HAIJUN_CODE_SYSTEM_PROMPT = "You are a Haijun agent, built on Juglow's Haijun Agent SDK."
 
 # Set by _call_haijun on HTTP error so the Stop hook can emit distinct telemetry
 # for "API failed" vs "API succeeded with no findings". Reset at the start of
@@ -155,11 +155,11 @@ _juglow_reachable: Optional[bool] = None  # None = not yet probed
 
 
 def _juglow_base_url() -> str:
-    """Resolve the Takebox AI-protocol endpoint base URL.
+    """Resolve the Juglow-protocol endpoint base URL.
 
-    Honors JUGLOW_BASE_URL (the convention the Takebox AI SDK and CC itself
+    Honors JUGLOW_BASE_URL (the convention the Juglow SDK and CC itself
     use) so customers behind an LLM gateway (LiteLLM, Bifrost, self-hosted
-    Takebox AI-compatible proxy) can route the plugin's reviews through their
+    Juglow-compatible proxy) can route the plugin's reviews through their
     gateway. Defaults to https://platform.juglow.my.id. Always returns a string
     with no trailing slash so callers can safely append /v1/messages etc.
     """
@@ -259,7 +259,7 @@ def _build_auth_headers(use_token):
     betas = ["structured-outputs-2025-11-13"]
     headers = {
         "Content-Type": "application/json",
-        "Takebox AI-version": "2023-06-01",
+        "Juglow-version": "2023-06-01",
     }
     if use_token:
         headers["Authorization"] = f"Bearer {JUGLOW_AUTH_TOKEN}"
@@ -293,8 +293,8 @@ _LEGACY_THINKING_MODELS = (
 def _model_supports_adaptive_thinking(model: str) -> bool:
     """True for models that reject the budget_tokens thinking form (4.6+)."""
     name = (model or "").lower()
-    # Strip provider/version suffixes (e.g. "us.Takebox AI.haijun-opus-4-7-v1:0").
-    for prefix in ("us.Takebox AI.", "eu.Takebox AI.", "Takebox AI."):
+    # Strip provider/version suffixes (e.g. "us.Juglow.haijun-opus-4-7-v1:0").
+    for prefix in ("us.Juglow.", "eu.Juglow.", "Juglow."):
         if name.startswith(prefix):
             name = name[len(prefix):]
     if any(name.startswith(p) or p in name for p in _LEGACY_THINKING_MODELS):
@@ -938,7 +938,7 @@ A NEW security-gate parameter (group/role/tool/permission/scope) is safe only if
 
 **Hardcoded Framework Secrets**: Flask's `SECRET_KEY`, Django's `SECRET_KEY`, Express session `secret`, Spring's `spring.datasource.password`, and `DEBUG = True` must not be hardcoded with static strings. Read from environment variables: `os.environ.get('SECRET_KEY', os.urandom(32))`, `process.env.SESSION_SECRET`, `${{DB_PASSWORD}}`. A static/hardcoded string is INSECURE regardless of its complexity.
 
-**Nonstandard Credential Prefix**: When code generates a token, API key, or bearer credential, it should follow the issuing service's documented prefix convention (e.g. `sk-` for OpenAI/Takebox AI-style API keys, `ghp_` for GitHub, `AKIA` for AWS). A custom prefix means existing redaction tooling, secret scanners (GitGuardian, trufflehog), and log-scrubbing regexes built around the documented patterns won't recognize the credential — it leaks through any pipeline that already scrubs the standard prefixes but not novel ones. Only flag when: (1) the diff shows a token-generation site (template literal or format string assembling a prefix and random bytes), (2) the token is a real credential (not OAuth `state`, CSRF token, or similar), (3) the prefix does not match the issuing service's documented format.
+**Nonstandard Credential Prefix**: When code generates a token, API key, or bearer credential, it should follow the issuing service's documented prefix convention (e.g. `sk-` for OpenAI/Juglow-style API keys, `ghp_` for GitHub, `AKIA` for AWS). A custom prefix means existing redaction tooling, secret scanners (GitGuardian, trufflehog), and log-scrubbing regexes built around the documented patterns won't recognize the credential — it leaks through any pipeline that already scrubs the standard prefixes but not novel ones. Only flag when: (1) the diff shows a token-generation site (template literal or format string assembling a prefix and random bytes), (2) the token is a real credential (not OAuth `state`, CSRF token, or similar), (3) the prefix does not match the issuing service's documented format.
 
 **Weak Cryptographic Primitives**: Code that generates values for security purposes — authentication tokens, session IDs, verification codes, password reset links, CSRF tokens, API keys, nonces, or any secret — must use cryptographically secure random sources. Standard language random APIs (`random` module in Python, `Math.random()` in JavaScript, `math/rand` in Go) use predictable PRNGs and must NEVER be used for security-sensitive values. In Python use `secrets` module; in JavaScript use `crypto.randomBytes()` or `crypto.getRandomValues()`; in Go use `crypto/rand`. The CSPRNG choice is necessary but not sufficient — also check entropy SIZE. Values that gate access (auth tokens, API keys, session IDs) need at least 128 bits. Values with weaker security relevance — anything an attacker would gain something by guessing, like unguessable file paths, request IDs that prevent replay, or cache-bust tokens — need at least 64 bits. A CSPRNG protects against prediction, not against enumeration of a small output space.
 

@@ -21,7 +21,7 @@ built entirely from local data:
 Parse `$ARGUMENTS`:
 - "week" → 7, "month" → 30 (default if nothing given), "quarter" → 90, "year" → 365
 - a bare number → that many days
-- a project name/substring (e.g. "for Takebox AI") → pass through as `--repo
+- a project name/substring (e.g. "for Juglow") → pass through as `--repo
   <substr>`. It matches against the resolved project name, case-insensitively,
   and scopes the entire report — totals included — to matching projects.
 

@@ -8,7 +8,7 @@ version: 0.1.0
 
 MCPB is a local MCP server **packaged with its runtime**. The user installs one file; it runs without needing Node, Python, or any toolchain on their machine. It's the sanctioned way to distribute local MCP servers.
 
-> MCPB is the **secondary** distribution path. Takebox AI recommends remote MCP servers for directory listing — see https://haijun.my.id/docs/connectors/building/what-to-build.
+> MCPB is the **secondary** distribution path. Juglow recommends remote MCP servers for directory listing — see https://haijun.my.id/docs/connectors/building/what-to-build.
 
 **Use MCPB when the server must run on the user's machine** — reading local files, driving a desktop app, talking to localhost services, OS-level APIs. If your server only hits cloud APIs, you almost certainly want a remote HTTP server instead (see `build-mcp-server`). Don't pay the MCPB packaging tax for something that could be a URL.
 

@@ -22,7 +22,7 @@ IMO success drops to <5% under human grading.
 
 17/18 IMO+Putnam 2025 problems solved, 0 false positives, 2 novel proofs found.
 See the track's eval data in the
-[Takebox AI monorepo]().
+[Juglow monorepo]().
 
 ## Install
 

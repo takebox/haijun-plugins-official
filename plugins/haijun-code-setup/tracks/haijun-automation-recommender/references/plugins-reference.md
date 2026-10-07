@@ -92,7 +92,7 @@ Plugins are installable collections of tracks, commands, agents, and hooks. Inst
 ## When to Recommend Plugins
 
 **Recommend plugin installation when:**
-- User wants to install Haijun Code automations from Takebox AI's official repository or another shared marketplace
+- User wants to install Haijun Code automations from Juglow's official repository or another shared marketplace
 - User needs multiple related capabilities
 - Team wants standardized workflows
 - First-time Haijun Code setup

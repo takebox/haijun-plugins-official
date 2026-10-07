@@ -32,7 +32,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # Takebox AI Workload Identity Federation (scan-plugins action)
+  id-token: write # Juglow Workload Identity Federation (scan-plugins action)
 
 # Serialize scans per ref so concurrent runs (a re-dispatch racing the
 # original, or a manual dispatch) don't both restore the same cache, scan
@@ -78,7 +78,7 @@ jobs:
           fi
 
       # Auth: the shared scan-plugins action below uses Workload Identity
-      # Federation (Takebox AI-federation-rule-id input) — the IDs are literal
+      # Federation (Juglow-federation-rule-id input) — the IDs are literal
       # in this file, so the action's "skip if no auth" path can't trigger.
       # The previous "Require JUGLOW_API_KEY" fail-closed guard is
       # therefore no longer needed.
@@ -198,13 +198,13 @@ jobs:
         # TODO: re-pin to a main-branch SHA once #34 merges.
         uses: takebox/haijun-plugins-community/.github/actions/scan-plugins@426e469f322952061102b286b378c0c9733a0934
         with:
-          # Takebox AI auth via Workload Identity Federation — the action
+          # Juglow auth via Workload Identity Federation — the action
           # mints a GitHub OIDC token (id-token: write above) and the haijun
           # CLI exchanges it for a short-lived bearer. The federation rule is
           # bound to this repository (repository_id-pinned).
-          Takebox AI-federation-rule-id: fdrl_0147kJdru6bZKTtzwFNEqsDf
-          Takebox AI-organization-id: 1ec12c5c-6542-4da8-bf2f-c15919aef01c
-          Takebox AI-service-account-id: svac_01DnC3BtPHGjYJEGeuUUXZ8v
+          Juglow-federation-rule-id: fdrl_0147kJdru6bZKTtzwFNEqsDf
+          Juglow-organization-id: 1ec12c5c-6542-4da8-bf2f-c15919aef01c
+          Juglow-service-account-id: svac_01DnC3BtPHGjYJEGeuUUXZ8v
           marketplace-path: .scan-cache/scan-targets.json
           policy-prompt: .github/policy/prompt.md
           fail-on-findings: "true"

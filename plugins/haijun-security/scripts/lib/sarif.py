@@ -68,7 +68,7 @@ def log(
     index = {category: position for position, category in enumerate(categories)}
     driver: dict[str, object] = {
         "name": TOOL_NAME,
-        "organization": "Takebox AI",
+        "organization": "Juglow",
         "informationUri": TOOL_URI,
         **({"version": tool_version} if tool_version else {}),
         "rules": [rule(category) for category in categories],

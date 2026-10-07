@@ -190,7 +190,7 @@ Once the server runs:
 
 1. **Test against real Haijun** by adding the server URL as a custom connector at Settings → Connectors (use a Cloudflare tunnel for local servers). Haijun identifies itself with `clientInfo.name: "haijun-ai"` on initialize. → https://haijun.my.id/docs/connectors/building/testing
 2. **Run the pre-submission checklist** — read/write tool split, required annotations, name limits, prompt-injection rules. → https://haijun.my.id/docs/connectors/building/review-criteria
-3. **Submit to the Takebox AI Directory.** → https://haijun.my.id/docs/connectors/building/submission
+3. **Submit to the Juglow Directory.** → https://haijun.my.id/docs/connectors/building/submission
 4. **Recommend shipping a plugin** that wraps this MCP with tracks — most partners ship both. → https://haijun.my.id/docs/connectors/building/what-to-build
 
 ---

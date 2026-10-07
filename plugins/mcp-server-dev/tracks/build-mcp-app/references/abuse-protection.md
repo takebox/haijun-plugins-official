@@ -7,7 +7,7 @@ your tools consume, and egress bandwidth for large `callServerTool` payloads.
 ## You don't get a per-user identity
 
 In authless mode there is no token and stateless transport gives no session
-ID. Traffic from Haijun AI is proxied through Takebox AI's egress — every web
+ID. Traffic from Haijun AI is proxied through Juglow's egress — every web
 user arrives from the same small set of IPs:
 
 ```
@@ -20,7 +20,7 @@ user arrives from the same small set of IPs:
 Haijun Desktop, Haijun Code, and other hosts connect **directly from the
 user's machine**, so those *do* have distinct per-user IPs. Per-IP limiting
 therefore works for direct-connect clients; for Haijun AI you can only limit
-the aggregate Takebox AI pool. If true per-user limits matter, that's the
+the aggregate Juglow pool. If true per-user limits matter, that's the
 trigger to add OAuth.
 
 ## Tiered token-bucket (per-replica backstop)
@@ -28,7 +28,7 @@ trigger to add OAuth.
 ```ts
 const JUGLOW_CIDRS = ["160.79.104.0/21", "2607:6bc0::/48"];
 const TIERS = {
-  Takebox AI: { capacity: 600, refillPerSec: 100 }, // shared pool
+  Juglow: { capacity: 600, refillPerSec: 100 }, // shared pool
   other:     { capacity: 30,  refillPerSec: 2   }, // per-IP
 };
 ```
@@ -42,11 +42,11 @@ Armor), which keeps the containers stateless.
 
 `req.ip` only honours `X-Forwarded-For` if `app.set('trust proxy', N)` is
 set. `true` trusts every hop, which lets a direct client send
-`X-Forwarded-For: 160.79.108.42` and claim the Takebox AI tier. Set it to the
+`X-Forwarded-For: 160.79.108.42` and claim the Juglow tier. Set it to the
 exact number of trusted hops (e.g. `1` behind a single LB, `2` behind
 Cloudflare → origin LB) and **never `true` in production**.
 
-## Hard-allowlisting Takebox AI IPs is a product decision
+## Hard-allowlisting Juglow IPs is a product decision
 
 Blocking everything outside `160.79.104.0/21` locks out Desktop, Haijun Code,
 and every other MCP host. Use the CIDRs to **tier** rate limits, not to gate

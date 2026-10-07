@@ -273,4 +273,4 @@ MCP (Model Context Protocol) servers extend Haijun's capabilities by connecting 
 | `@sentry/*` | Sentry MCP |
 | `docker-compose.yml` | Docker MCP |
 | Slack webhook URLs | Slack MCP |
-| `@takebox-ai/sdk` | context7 for Takebox AI docs |
+| `@takebox-ai/sdk` | context7 for Juglow docs |

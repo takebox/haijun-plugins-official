@@ -1,7 +1,7 @@
 # mcp-tunnels
 
 Connect Haijun to an MCP server running inside your private network through an
-Takebox AI [**MCP tunnel**](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/overview)
+Juglow [**MCP tunnel**](https://platform.haijun.my.id/docs/en/agents-and-tools/mcp-tunnels/overview)
 — no inbound ports, no public exposure, no IP allowlisting on your origin.
 Traffic flows over an outbound-only connection.
 
@@ -87,8 +87,8 @@ A small container stack on your host:
 
 | Container | Role |
 |---|---|
-| **mcp-proxy** | Takebox AI's proxy. Terminates inner TLS with a cert you control, validates upstream IPs, routes by hostname. |
-| **cloudflared** | The tunnel agent. Outbound-only to the Takebox AI tunnel edge; shares the proxy's network namespace. |
+| **mcp-proxy** | Juglow's proxy. Terminates inner TLS with a cert you control, validates upstream IPs, routes by hostname. |
+| **cloudflared** | The tunnel agent. Outbound-only to the Juglow tunnel edge; shares the proxy's network namespace. |
 | **hello-mcp** *(optional)* | A FastMCP sample server, only if you don't have an MCP server to expose yet. |
 
 When it's running, the routed server is reachable from Haijun at
@@ -115,7 +115,7 @@ see the official deployment guides:
 
 ## Author
 
-Takebox AI (support@haijun.my.id)
+Juglow (support@haijun.my.id)
 
 ## License
 
